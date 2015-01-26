@@ -1,0 +1,22 @@
+{
+  "name": "timesync",
+  "version": "0.0.1",
+  "description": "Time synchronization for peers",
+  "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
+  "main": "./timesync.js",
+  "keywords": [
+    "time",
+    "synchronization",
+    "ntp",
+    "client",
+    "server",
+    "isomorphic"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/enmasseio/timesync.git"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {}
+}
