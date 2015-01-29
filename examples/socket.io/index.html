@@ -6,16 +6,21 @@
 
   var timesync1 = timesync.create({
     peers: [socket1],
-    interval: 5000
+    interval: 5000,
+    delay: 100
+  });
+
+  timesync1.on('offset', function (offset) {
+    document.write('changed offset: ' + offset + ' ms<br>');
   });
 
   timesync1.send = function (socket, data) {
-    console.log('send', data);
+    //console.log('send', data);
     socket.emit('msg', data);
   };
 
   socket1.on('msg', function (data) {
-    console.log('receive', data);
+    //console.log('receive', data);
     timesync1.receive(null, data);
   });
 </script>

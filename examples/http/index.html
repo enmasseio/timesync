@@ -10,14 +10,19 @@
     var timesync1 = timesync.create({
       id: 'timesync1',
       peers: ['/ping'],
-      interval: 5000
+      interval: 5000,
+      delay: 100
+    });
+
+    timesync1.on('offset', function (offset) {
+      document.write('changed offset: ' + offset + ' ms<br>');
     });
 
     timesync1.send = function (to, data) {
-      console.log('send', data);
+      //console.log('send', data);
       $.post(to, JSON.stringify(data))
           .done(function (data) {
-            console.log('receive', data);
+            //console.log('receive', data);
             timesync1.receive(to, JSON.parse(data));
           })
           .fail(function (err) {

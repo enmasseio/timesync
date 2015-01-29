@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * timesync
  *
@@ -6,10 +8,10 @@
  * https://github.com/enmasseio/timesync
  */
 (function (factory) {
-  if (typeof define === 'function' && define.amd) {
+  if (typeof define === "function" && define.amd) {
     // AMD. Register as an anonymous module.
     define([], factory);
-  } else if (typeof exports === 'object') {
+  } else if (typeof exports === "object") {
     // OldNode. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like OldNode.
@@ -18,7 +20,7 @@
     // Browser globals (root is window)
     window.timesync = factory();
   }
-}(function () {
+})(function () {
   /**
    * Factory function to create a timesync instance
    * @param {Object} [options]  TODO: describe options
@@ -27,7 +29,7 @@
   function create(options) {
     var timesync = {
       options: {
-        id: 'timesync_' + Math.round(Math.random() * 1e5),
+        id: "timesync_" + Math.round(Math.random() * 100000),
         interval: 60 * 60 * 1000, // ms
         timeout: 10000, // ms
         delay: 1000, // ms
@@ -52,7 +54,7 @@
        * @param {*} data
        */
       send: function (to, data) {
-        throw new Error('Cannot execute abstract method send');
+        throw new Error("Cannot execute abstract method send");
       },
 
       /**
@@ -69,14 +71,13 @@
         if (data && data.id in timesync.inProgress) {
           // this is a reply
           timesync.inProgress[data.id](data.result);
-        }
-        else if (data && data.id !== undefined) {
+        } else if (data && data.id !== undefined) {
           // this is a request from an other peer
           // reply with our current time
           timesync.send(from, {
             id: data.id,
             result: timesync.now()
-          })
+          });
         }
       },
 
@@ -93,7 +94,7 @@
 
           var timeout = setTimeout(function () {
             delete timesync.inProgress[id];
-            reject(new Error('Timeout'));
+            reject(new Error("Timeout"));
           }, timesync.options.timeout);
 
           timesync.inProgress[id] = function (data) {
@@ -116,14 +117,14 @@
        * Docs: http://www.mine-control.com/zack/timesync/timesync.html
        */
       sync: function () {
-        timesync.emit('sync');
+        timesync.emit("sync");
 
         var peers = timesync.options.peers;
-        return Promise
-            .all(peers.map(peer => timesync._syncWithPeer(peer)))
-            .then(function () {
-              timesync.emit('offset', timesync.offset);
-            });
+        return Promise.all(peers.map(function (peer) {
+          return timesync._syncWithPeer(peer);
+        })).then(function () {
+          timesync.emit("offset", timesync.offset);
+        });
       },
 
       /**
@@ -137,30 +138,39 @@
         // retrieve an offset of the peer after a delay of 1 sec
         function sync() {
           var delay = timesync.options.delay;
-          return wait(delay).then(() => timesync._retrieveOffset(peer));
+          return wait(delay).then(function () {
+            return timesync._retrieveOffset(peer);
+          });
         }
 
         var count = timesync.options.repeat;
-        return repeat(sync, count)
-            .then(function (all) {
-              // filter out null results
-              var results = all.filter(result => result !== null);
+        return repeat(sync, count).then(function (all) {
+          // filter out null results
+          var results = all.filter(function (result) {
+            return result !== null;
+          });
 
-              // calculate the limit for outliers
-              var roundtrips = results.map(result => result.roundtrip);
-              var limit = median(roundtrips) + std(roundtrips);
+          // calculate the limit for outliers
+          var roundtrips = results.map(function (result) {
+            return result.roundtrip;
+          });
+          var limit = median(roundtrips) + std(roundtrips);
 
-              // filter all results which have a roundtrip smaller than the mean+std
-              var filtered = results.filter(result => result.roundtrip < limit);
-              var offsets = filtered.map(result => result.offset);
+          // filter all results which have a roundtrip smaller than the mean+std
+          var filtered = results.filter(function (result) {
+            return result.roundtrip < limit;
+          });
+          var offsets = filtered.map(function (result) {
+            return result.offset;
+          });
 
-              // apply the new offset
-              if (offsets.length > 0) {
-                timesync.offset = mean(offsets);
-                return timesync.offset;
-              }
-              return null;
-            });
+          // apply the new offset
+          if (offsets.length > 0) {
+            timesync.offset = mean(offsets);
+            return timesync.offset;
+          }
+          return null;
+        });
       },
 
       /**
@@ -172,19 +182,17 @@
       _retrieveOffset: function (peer) {
         var start = Date.now(); // local system time
 
-        return timesync.rpc(peer, 'ping')
-            .then(function (timestamp) {
-              var end = Date.now(); // local system time
-              var roundtrip = end - start;
-              return {
-                roundtrip: roundtrip,
-                offset: timestamp - end + roundtrip / 2 // offset from local system time
-              };
-            })
-            .catch(function (err) {
-              // just ignore failed requests, return null
-              return null;
-            });
+        return timesync.rpc(peer, "ping").then(function (timestamp) {
+          var end = Date.now(); // local system time
+          var roundtrip = end - start;
+          return {
+            roundtrip: roundtrip,
+            offset: timestamp - end + roundtrip / 2 // offset from local system time
+          };
+        })["catch"](function (err) {
+          // just ignore failed requests, return null
+          return null;
+        });
       },
 
       /**
@@ -201,15 +209,13 @@
       start: function () {
         timesync.running = true;
 
-        timesync
-            .sync()
-            .then(function () {
-              timesync.timeout = setTimeout(function () {
-                if (timesync.running) {
-                  timesync.start();
-                }
-              }, timesync.options.interval);
-            });
+        timesync.sync().then(function () {
+          timesync.timeout = setTimeout(function () {
+            if (timesync.running) {
+              timesync.start();
+            }
+          }, timesync.options.interval);
+        });
       },
 
       /**
@@ -267,9 +273,8 @@
           fn().then(function (result) {
             results.push(result);
             recurse();
-          })
-        }
-        else {
+          });
+        } else {
           resolve(results);
         }
       }
@@ -289,7 +294,9 @@
 
     obj.emit = function (event, data) {
       var callbacks = _callbacks[event];
-      callbacks && callbacks.forEach(callback => callback(data));
+      callbacks && callbacks.forEach(function (callback) {
+        return callback(data);
+      });
     };
 
     obj.on = function (event, callback) {
@@ -307,8 +314,7 @@
         if (callbacks.length === 0) {
           delete _callbacks[event];
         }
-      }
-      else {
+      } else {
         delete _callbacks[event];
       }
     };
@@ -321,18 +327,28 @@
   }
 
   // basic statistics
-  var compare  = (a, b) => a > b ? 1 : a < b ? -1 : 0;
-  var add      = (a, b) => a + b;
-  var sum      = arr => arr.reduce(add);
-  var mean     = arr => sum(arr) / arr.length;
-  var std      = arr => Math.sqrt(variance(arr));
+  var compare = function (a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  };
+  var add = function (a, b) {
+    return a + b;
+  };
+  var sum = function (arr) {
+    return arr.reduce(add);
+  };
+  var mean = function (arr) {
+    return sum(arr) / arr.length;
+  };
+  var std = function (arr) {
+    return Math.sqrt(variance(arr));
+  };
   var variance = function (arr) {
     if (arr.length < 2) return 0;
 
     var _mean = mean(arr);
-    return arr
-            .map(x => Math.pow(x - _mean, 2))
-            .reduce(add) / (arr.length - 1);
+    return arr.map(function (x) {
+      return Math.pow(x - _mean, 2);
+    }).reduce(add) / (arr.length - 1);
   };
   var median = function (arr) {
     if (arr.length < 2) return arr[0];
@@ -341,8 +357,7 @@
     if (sorted.length % 2 === 0) {
       // even
       return (arr[arr.length / 2 - 1] + arr[arr.length / 2]) / 2;
-    }
-    else {
+    } else {
       // odd
       return arr[(arr.length - 1) / 2];
     }
@@ -360,4 +375,4 @@
   return {
     create: create
   };
-}));
+});

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
-  "main": "./timesync.js",
+  "main": "./dist/timesync.js",
   "keywords": [
     "time",
     "synchronization",
@@ -26,8 +26,8 @@
     "watch": "^0.13.0"
   },
   "scripts": {
-    "6to5": "6to5 lib/timesync.es6.js -o timesync.js",
-    "minify": "uglifyjs timesync.js -o timesync.min.js",
+    "6to5": "6to5 lib/timesync.es6.js -o dist/timesync.js",
+    "minify": "uglifyjs dist/timesync.js -o dist/timesync.min.js",
     "build": "npm run 6to5; npm run minify",
     "watch": "watch \"npm run build\" lib"
   }

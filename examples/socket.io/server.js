@@ -11,7 +11,7 @@ function handler (req, res) {
   console.log('request', req.url);
 
   if (req.url === '/timesync/timesync.js') {
-    return sendFile('../../timesync.js', res);
+    return sendFile('../../dist/timesync.js', res);
   }
 
   if (req.url === '/' || req.url === 'index.html') {
@@ -24,9 +24,9 @@ function handler (req, res) {
 
 io.on('connection', function (socket) {
   socket.on('msg', function (data) {
-    console.log('message', data)
+    console.log('message', data);
     socket.emit('msg', {
-      id: data && data.id || null,
+      id: data && 'id' in data ? data.id : null,
       result: Date.now()
     });
   });

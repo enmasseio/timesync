@@ -1,6 +1,5 @@
 var app = require('http').createServer(handler);
 var fs = require('fs');
-var qs = require('querystring');
 
 var PORT = 8081;
 
@@ -12,7 +11,7 @@ function handler (req, res) {
 
   if (req.url === '/timesync/timesync.js') {
     res.setHeader('Content-Type', 'application/javascript');
-    return sendFile('../../timesync.js', res);
+    return sendFile('../../dist/timesync.js', res);
   }
 
   if (req.url.indexOf('/ping') === 0) {
@@ -30,7 +29,7 @@ function handler (req, res) {
         var input = JSON.parse(body);
 
         var data = {
-          id: input.id || null,
+          id: 'id' in input ? input.id : null,
           result: Date.now()
         };
         res.writeHead(200);
