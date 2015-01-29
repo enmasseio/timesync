@@ -1,0 +1,21 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/timesync/timesync.js"></script>
+<script>
+  var socket1 = io('http://localhost:8081');
+
+  var timesync1 = timesync.create({
+    peers: [socket1],
+    interval: 5000
+  });
+
+  timesync1.send = function (socket, data) {
+    console.log('send', data);
+    socket.emit('msg', data);
+  };
+
+  socket1.on('msg', function (data) {
+    console.log('receive', data);
+    timesync1.receive(null, data);
+  });
+</script>
