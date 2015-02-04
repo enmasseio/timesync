@@ -6,11 +6,10 @@
 
   var timesync1 = timesync.create({
     peers: [socket1],
-    interval: 5000,
-    delay: 100
+    interval: 5000
   });
 
-  timesync1.on('offset', function (offset) {
+  timesync1.on('change', function (offset) {
     document.write('changed offset: ' + offset + ' ms<br>');
   });
 

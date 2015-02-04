@@ -17,6 +17,7 @@
     "url": "git://github.com/enmasseio/timesync.git"
   },
   "dependencies": {
+    "promise": "^6.1.0",
     "pubnub": "^3.7.8",
     "socket.io": "^1.3.2"
   },
@@ -30,6 +31,6 @@
     "bundle": "browserify lib/timesync.js -t 6to5ify -s timesync -o dist/timesync.js",
     "minify": "uglifyjs dist/timesync.js -o dist/timesync.min.js",
     "build": "npm run bundle; npm run minify",
-    "watch": "watch \"npm run build\" lib"
+    "watch": "watch 'npm run build' lib"
   }
 }
