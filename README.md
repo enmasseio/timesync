@@ -88,19 +88,7 @@ Name                  | Return type | Description
 `send(to, data)`      | none        | Send a message to a peer. `to` is the id of the peer, and `data` a JSON object containing the message.
 `receive(from, data)` | none        | Receive a message from a peer. `from` is the id of the sender, and `data` a JSON object containing the message.
 
-`timesync` sends messages using the JSON-RPC protocol. A peer sends a message:
-
-```json
-{"jsonrpc": "2.0", "id": "12345", "method": "time"}
-```
-
-The receiving peer replies with the same id and it's current time:
-
-```json
-{"jsonrpc": "2.0", "id": "12345", "result": 1423151204595}
-```
-
-The sending peer matches the returned message by id and uses the result to adjust it's offset.
+`timesync` sends messages using the JSON-RPC protocol, as described in the section [Protocol](#protocol).
 
 
 ## Events
@@ -127,6 +115,39 @@ Name      | Type     | Description
 --------- | -------- | --------------------------------------------
 `offset`  | `number` | The offset from system time in milliseconds.
 `options` | `Object` | An object holding all options of the timesync instance. One can safely adjust the options at any time, though some changed options do not have immediate effect (for example a changed `interval` will be applied after the first next synchronization.
+
+
+# Algorithm
+
+`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](A Stream-based Time Synchronization Technique For Networked Computer Games):
+
+> A simple algorithm with these properties is as follows:
+>
+> 1. Client stamps current local time on a "time request" packet and sends to server
+> 2. Upon receipt by server, server stamps server-time and returns
+> 3. Upon receipt by client, client subtracts current time from sent time and divides by two to compute latency. It subtracts current time from server time to determine client-server time delta and adds in the half-latency to get the correct clock delta. (So far this algothim is very similar to SNTP)
+> 4. The first result should immediately be used to update the clock since it will get the local clock into at least the right ballpark (at least the right timezone!)
+> 5. The client repeats steps 1 through 3 five or more times, pausing a few seconds each time. Other traffic may be allowed in the interim, but should be minimized for best results
+> 6. The results of the packet receipts are accumulated and sorted in lowest-latency to highest-latency order. The median latency is determined by picking the mid-point sample from this ordered list.
+> 7. All samples above approximately 1 standard-deviation from the median are discarded and the remaining samples are averaged using an arithmetic mean.
+
+This algorithm assumes multiple clients synchronizing with a single server. In case of multiple peers, `timesync` will take the average offset of all peers (excluding itself) as offset.
+
+# Protocol
+
+`timesync` sends messages using the JSON-RPC protocol. A peer sends a message:
+
+```json
+{"jsonrpc": "2.0", "id": "12345", "method": "time"}
+```
+
+The receiving peer replies with the same id and it's current time:
+
+```json
+{"jsonrpc": "2.0", "id": "12345", "result": 1423151204595}
+```
+
+The sending peer matches the returned message by id and uses the result to adjust it's offset.
 
 
 # Resources
