@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
-  "main": "./dist/timesync.js",
+  "main": "./dist/timesync.min.js",
   "keywords": [
     "time",
     "synchronization",

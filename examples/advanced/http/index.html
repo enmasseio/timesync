@@ -10,7 +10,7 @@
   <script>
     var timesync1 = timesync.create({
       id: 'timesync1',
-      peers: ['/ping'],
+      peers: ['/timesync'],
       interval: 5000
     });
 
@@ -33,7 +33,7 @@
           })
           .done(function (data) {
             //console.log('receive', data);
-            timesync1.receive(to, JSON.parse(data));
+            timesync1.receive(to, data);
           })
           .fail(function (err) {
             console.log('Error', err);

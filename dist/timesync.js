@@ -21,6 +21,7 @@ function emitter(obj) {
   obj.on = function (event, callback) {
     var callbacks = _callbacks[event] || (_callbacks[event] = []);
     callbacks.push(callback);
+    return obj;
   };
 
   obj.off = function (event, callback) {
@@ -36,6 +37,7 @@ function emitter(obj) {
     } else {
       delete _callbacks[event];
     }
+    return obj;
   };
 
   obj.list = function (event) {
@@ -131,7 +133,7 @@ function create(options) {
   var timesync = {
     // configurable options
     options: {
-      id: "timesync_" + Math.round(Math.random() * 100000), // some semi-random identifier
+      //id: 'timesync_' + Math.round(Math.random() * 1e5), // some semi-random identifier
       interval: 60 * 60 * 1000, // interval for doing synchronizations in ms
       timeout: 10000, // timeout for requests to fail in ms
       delay: 1000, // delay between requests in ms
@@ -187,6 +189,7 @@ function create(options) {
         // this is a request from an other peer
         // reply with our current time
         timesync.send(from, {
+          jsonrpc: "2.0",
           id: data.id,
           result: timesync.now()
         });
@@ -217,6 +220,7 @@ function create(options) {
         };
 
         timesync.send(to, {
+          jsonrpc: "2.0",
           id: id,
           method: method,
           params: params
@@ -238,7 +242,7 @@ function create(options) {
         if (offsets.length > 0) {
           // take the average of all peers (excluding self) as new offset
           timesync.offset = stat.mean(offsets);
-          timesync.emit("change", timesync.offset, "final");
+          timesync.emit("change", timesync.offset);
         }
         timesync.emit("sync", "end");
       });
@@ -295,7 +299,7 @@ function create(options) {
     _getOffset: function (peer) {
       var start = Date.now(); // local system time
 
-      return timesync.rpc(peer, "ping").then(function (timestamp) {
+      return timesync.rpc(peer, "time").then(function (timestamp) {
         var end = Date.now(); // local system time
         var roundtrip = end - start;
         var offset = timestamp - end + roundtrip / 2; // offset from local system time
@@ -319,7 +323,7 @@ function create(options) {
 
     /**
      * Get the current time
-     * @returns {number}
+     * @returns {number} Returns a timestamp
      */
     now: function () {
       return timesync.options.now() + timesync.offset;
@@ -360,9 +364,6 @@ function create(options) {
   }
 
   // validate configuration
-  if (!timesync.options.peers || timesync.options.peers.length === 0) {
-    throw new Error("No peers configured");
-  }
   if (!Array.isArray(timesync.options.peers)) {
     timesync.options.peers = [timesync.options.peers];
   }

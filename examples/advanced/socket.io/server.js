@@ -5,13 +5,13 @@ var fs = require('fs');
 var PORT = 8081;
 
 app.listen(PORT);
-console.log('Server listening on port ' + PORT);
+console.log('Server listening at http://localhost:' + PORT);
 
 function handler (req, res) {
   console.log('request', req.url);
 
   if (req.url === '/timesync/timesync.js') {
-    return sendFile('../../dist/timesync.js', res);
+    return sendFile('../../../dist/timesync.js', res);
   }
 
   if (req.url === '/' || req.url === 'index.html') {
@@ -23,9 +23,9 @@ function handler (req, res) {
 }
 
 io.on('connection', function (socket) {
-  socket.on('msg', function (data) {
+  socket.on('timesync', function (data) {
     console.log('message', data);
-    socket.emit('msg', {
+    socket.emit('timesync', {
       id: data && 'id' in data ? data.id : null,
       result: Date.now()
     });

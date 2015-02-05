@@ -10,16 +10,20 @@
     interval: 5000
   });
 
+  timesync1.on('sync', function (state) {
+    document.write('sync ' + state + '<br>');
+  });
+
   timesync1.on('change', function (offset) {
     document.write('changed offset: ' + offset + ' ms<br>');
   });
 
   timesync1.send = function (socket, data) {
     //console.log('send', data);
-    socket.emit('msg', data);
+    socket.emit('timesync', data);
   };
 
-  socket1.on('msg', function (data) {
+  socket1.on('timesync', function (data) {
     //console.log('receive', data);
     timesync1.receive(null, data);
   });

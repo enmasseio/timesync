@@ -4,17 +4,17 @@ var fs = require('fs');
 var PORT = 8081;
 
 app.listen(PORT);
-console.log('Server listening on port ' + PORT);
+console.log('Server listening at http://localhost:' + PORT);
 
 function handler (req, res) {
   console.log('request', req.url);
 
   if (req.url === '/timesync/timesync.js') {
     res.setHeader('Content-Type', 'application/javascript');
-    return sendFile('../../dist/timesync.js', res);
+    return sendFile('../../../dist/timesync.js', res);
   }
 
-  if (req.url.indexOf('/ping') === 0) {
+  if (req.url === '/timesync') {
     if (req.method == 'POST') {
       var body = '';
       req.on('data', function (data) {
