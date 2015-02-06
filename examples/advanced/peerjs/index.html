@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.14/peer.min.js"></script>
+  <script src="../../../dist/timesync.js"></script>
+</head>
+<body>
+<table>
+  <tr>
+    <td>Your id:</td>
+    <td><input id="id" value="peer1" /></td>
+  </tr>
+  <tr>
+    <td>Peers (comma separated):</td>
+    <td><input id="peers" value="" /></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><input id="connect" type="button" value="Connect" /></td>
+  </tr>
+</table>
+  <script>
+    var peer1;
+    var timesync1;
+
+    document.getElementById('connect').onclick = function () {
+      var id = document.getElementById('id').value;
+      var peers = document.getElementById('peers').value
+          .split(',')
+          .map(function (peer) {
+            return peer.trim();
+          });
+      if (peers[0] === '') {peers = [];}
+
+      // close if existing
+      if (peer1) {
+        peer1.close();
+      }
+
+      // Create a new Peer with the demo API key
+      peer1 = new Peer(id, {key: 'lwjd5qra8257b9', debug: 3});
+      peer1.on('open', function(){
+        // create a timesync
+        timesync1 = timesync.create({
+          id: id,
+          peers: peers,
+          interval: 5000
+        });
+
+        timsync1.on('sync', function (status) {
+          if (status == 'start') {
+            console.log('start')
+          }
+        });
+
+        peers.forEach(function (id) {
+          peer1.connect(id)
+              .on('data', function(data) {
+                console.log('receive', id, data);
+                timesync1.receive(id, data);
+              })
+              .on('error', function (err) {
+                console.log('Error', err);
+              })
+        });
+
+        timesync1.send = function (id, data) {
+          console.log('send', id, data);
+          var conn = peer1.connections[id];
+          if (conn) {
+            conn.send(data);
+          }
+          else {
+            throw new Error('Cannot send data to "' + id + '": no connection');
+          }
+        };
+      });
+
+      peer1.on('connection', function (conn) {
+        console.log('new connection', conn.peer);
+        conn.on('data', function(data) {
+          console.log('receive', conn.peer, data);
+          timesync1.receive(conn.peer, data);
+        });
+      })
+    };
+
+  </script>
+</body>
+</html>

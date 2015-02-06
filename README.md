@@ -28,18 +28,18 @@ npm install timesync
 Example usage:
 
 ```js
-// create a timesync
-var time = timesync({
+// create a timesync instance
+var ts = timesync({
   peers: [...]
 });
 
 // get notified on changes in the offset
-time.on('change', function (offset) {
+ts.on('change', function (offset) {
   console.log('offset from system time:', offset, 'ms');
 }
 
 // get the synchronized time
-console.log('now:', new Date(time.now()));
+console.log('now:', new Date(ts.now()));
 ```
 
 More examples are available in the [/examples](/examples) folder.
@@ -52,7 +52,7 @@ More examples are available in the [/examples](/examples) folder.
 An instance of timesync is created as:
 
 ```js
-var time = timesync(options);
+var ts = timesync(options);
 ```
 
 ### Options
@@ -81,7 +81,7 @@ Name                  | Return type | Description
 `stop()`  | none        | Stop doing a synchronization every `interval` milliseconds.
 `sync()`  | none        | Do a synchronization with all peers now.
 
-To be able to send and receive messages from peers, `timesync` needs a transport. To hook up a transport like a websocket or http requests, one has to override the `send(id, data)` method of the `timesync` instance, and has to call `timsync.receive(id, data)` on incoming messages.
+To be able to send and receive messages from peers, `timesync` needs a transport. To hook up a transport like a websocket or http requests, one has to override the `send(id, data)` method of the `timesync` instance, and has to call `ts.receive(id, data)` on incoming messages.
 
 Name                  | Return type | Description
 --------------------- | ----------- | ----------------------------------
@@ -96,7 +96,7 @@ Name                  | Return type | Description
 `timesync` emits events when starting and finishing a synchronization, and when the time offset changes. To listen for events:
 
 ```js
-time.on('change', function (offset) {
+ts.on('change', function (offset) {
   console.log('offset changed:', offset);
 });
 ```
@@ -133,12 +133,13 @@ Name      | Type     | Description
 
 This algorithm assumes multiple clients synchronizing with a single server. In case of multiple peers, `timesync` will take the average offset of all peers (excluding itself) as offset.
 
+
 # Protocol
 
 `timesync` sends messages using the JSON-RPC protocol. A peer sends a message:
 
 ```json
-{"jsonrpc": "2.0", "id": "12345", "method": "time"}
+{"jsonrpc": "2.0", "id": "12345", "method": "timesync"}
 ```
 
 The receiving peer replies with the same id and it's current time:

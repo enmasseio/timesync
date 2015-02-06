@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Peer 1</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.14/peer.min.js"></script>
+  <script src="../../../dist/timesync.js"></script>
+  <script src="client.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    table th {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<h2>peer1</h2>
+<p>
+  Synchronizes with peer2 and peer3.
+</p>
+<table>
+  <tr><th>System time</th><td id="systemTime"></td></tr>
+  <tr><th>Synchronized time</th><td id="syncTime"></td></tr>
+  <tr><th>Offset</th><td id="offset"></td></tr>
+</table>
+
+<script>
+  var id = 'peer1';
+  var peers = ['peer2', 'peer3'];
+
+  var obj = connect(id, peers);
+  var peer = obj.peer;
+  var ts = obj.ts;
+</script>
+
+</body>
+</html>

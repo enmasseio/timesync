@@ -8,21 +8,20 @@
 </head>
 <body>
   <script>
-    var timesync1 = timesync.create({
-      id: 'timesync1',
+    var ts = timesync.create({
       peers: ['/timesync'],
       interval: 5000
     });
 
-    timesync1.on('sync', function (state) {
+    ts.on('sync', function (state) {
       document.write('sync ' + state + '<br>');
     });
 
-    timesync1.on('change', function (offset) {
+    ts.on('change', function (offset) {
       document.write('changed offset: ' + offset + ' ms<br>');
     });
 
-    timesync1.send = function (to, data) {
+    ts.send = function (to, data) {
       //console.log('send', data);
       $.ajax({
             url: to,
@@ -33,7 +32,7 @@
           })
           .done(function (data) {
             //console.log('receive', data);
-            timesync1.receive(to, data);
+            ts.receive(to, data);
           })
           .fail(function (err) {
             console.log('Error', err);

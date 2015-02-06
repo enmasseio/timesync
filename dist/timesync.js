@@ -205,7 +205,7 @@ function create(options) {
      */
     rpc: function (to, method, params) {
       return new Promise(function (resolve, reject) {
-        var id = nextId();
+        var id = util.nextId();
 
         var timeout = setTimeout(function () {
           delete timesync.inProgress[id];
@@ -238,7 +238,10 @@ function create(options) {
       var peers = timesync.options.peers;
       return Promise.all(peers.map(function (peer) {
         return timesync._syncWithPeer(peer);
-      })).then(function (offsets) {
+      })).then(function (all) {
+        var offsets = all.filter(function (offset) {
+          return timesync._validOffset(offset);
+        });
         if (offsets.length > 0) {
           // take the average of all peers (excluding self) as new offset
           timesync.offset = stat.mean(offsets);
@@ -246,6 +249,16 @@ function create(options) {
         }
         timesync.emit("sync", "end");
       });
+    },
+
+    /**
+     * Test whether given offset is a valid number (not NaN, Infinite, or null)
+     * @param {number} offset
+     * @returns {boolean}
+     * @private
+     */
+    _validOffset: function (offset) {
+      return offset !== null && !isNaN(offset) && isFinite(offset);
     },
 
     /**
@@ -299,7 +312,7 @@ function create(options) {
     _getOffset: function (peer) {
       var start = Date.now(); // local system time
 
-      return timesync.rpc(peer, "time").then(function (timestamp) {
+      return timesync.rpc(peer, "timesync").then(function (timestamp) {
         var end = Date.now(); // local system time
         var roundtrip = end - start;
         var offset = timestamp - end + roundtrip / 2; // offset from local system time
@@ -380,15 +393,6 @@ function create(options) {
 
   return timesync;
 }
-
-/**
- * Simple id generator
- * @returns {number} Returns a new id
- */
-function nextId() {
-  return _id++;
-}
-var _id = 0;
 exports.__esModule = true;
 
 },{"./emitter.js":1,"./stat.js":2,"./util.js":4}],4:[function(require,module,exports){
@@ -409,6 +413,13 @@ exports.wait = wait;
  * @return {Promise}
  */
 exports.repeat = repeat;
+
+
+/**
+ * Simple id generator
+ * @returns {number} Returns a new id
+ */
+exports.nextId = nextId;
 function wait(delay) {
   return new Promise(function (resolve) {
     setTimeout(resolve, delay);
@@ -432,7 +443,10 @@ function wait(delay) {
 
     recurse();
   });
+}function nextId() {
+  return _id++;
 }
+var _id = 0;
 exports.__esModule = true;
 
 },{}]},{},[3])(3)
