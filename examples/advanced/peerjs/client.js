@@ -6,9 +6,10 @@
  *                                           created peer and the timesync
  */
 function connect(id, peers) {
-  var divSystemTime = document.getElementById('systemTime');
-  var divSyncTime = document.getElementById('syncTime');
-  var divOffset = document.getElementById('offset');
+  var domSystemTime = document.getElementById('systemTime');
+  var domSyncTime   = document.getElementById('syncTime');
+  var domOffset     = document.getElementById('offset');
+  var domSyncing    = document.getElementById('syncing');
 
   var ts = timesync.create({
     peers: [], // start empty, will be updated at the start of every synchronization
@@ -21,12 +22,18 @@ function connect(id, peers) {
     if (state == 'start') {
       ts.options.peers = openConnections();
       console.log('syncing with peers [' + ts.options.peers.join(', ') + ']');
+      if (ts.options.peers.length) {
+        domSyncing.innerHTML = 'syncing with ' + ts.options.peers.join(', ') + '...';
+      }
+    }
+    if (state == 'end') {
+      domSyncing.innerHTML = '';
     }
   });
 
   ts.on('change', function (offset) {
     console.log('changed offset: ' + offset);
-    divOffset.innerHTML = offset.toFixed(1) + ' ms';
+    domOffset.innerHTML = offset.toFixed(1) + ' ms';
   });
 
   ts.send = function (id, data) {
@@ -46,8 +53,8 @@ function connect(id, peers) {
 
   // show the system time and synced time once a second on screen
   setInterval(function () {
-    divSystemTime.innerHTML = new Date().toISOString().replace(/[A-Z]/g, ' ');
-    divSyncTime.innerHTML   = new Date(ts.now()).toISOString().replace(/[A-Z]/g, ' ');
+    domSystemTime.innerHTML = new Date().toISOString().replace(/[A-Z]/g, ' ');
+    domSyncTime.innerHTML   = new Date(ts.now()).toISOString().replace(/[A-Z]/g, ' ');
   }, 1000);
 
   // Create a new Peer with the demo API key
