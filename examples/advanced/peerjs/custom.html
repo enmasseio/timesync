@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>custom peer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.14/peer.min.js"></script>
+  <script src="../../../dist/timesync.js"></script>
+  <script src="client.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    table th {
+      text-align: left;
+    }
+    .info {
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Setup</h1>
+<table>
+  <tr>
+    <th><label for="id">Id</label></th>
+    <td><input id="id" value="peer4" /></td>
+    <td class="info">your own id</td>
+  </tr>
+  <tr>
+    <th><label for="peers">Peers</label></th>
+    <td><input id="peers" value="peer1, peer2, peer3" /></td>
+    <td class="info">comma separated list with id's of peers</td>
+  </tr>
+  <tr>
+    <th></th>
+    <td><input id="connect" type="button" value="Connect" /></td>
+  </tr>
+</table>
+
+<h1>Status</h1>
+<table>
+  <tr><th>System time</th><td id="systemTime"></td></tr>
+  <tr><th>Synchronized time</th><td id="syncTime"></td></tr>
+  <tr><th>Offset</th><td id="offset"></td></tr>
+</table>
+<p id="syncing"></p>
+
+<script>
+  var id, peer, peers, obj, ts;
+
+  document.getElementById('connect').onclick = function () {
+    id = document.getElementById('id').value;
+    peers = document.getElementById('peers').value
+        .split(',')
+        .map(function (peer) {
+          return peer.trim();
+        })
+        .filter(function (peer) {
+          return peer !== '';
+        });
+
+    // close if existing
+    if (peer) {
+      peer.close();
+    }
+
+    obj = connect(id, peers);
+    peer = obj.peer;
+    ts = obj.ts;
+  }
+
+</script>
+</body>
+</html>

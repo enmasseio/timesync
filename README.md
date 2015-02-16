@@ -59,14 +59,14 @@ var ts = timesync(options);
 
 The following options are available:
 
-Name       | Type       | Default    | Description
----------- | ---------- | ---------- | ----------------------------------------
-`interval` | `number`   | `3600000`  | Interval in milliseconds for running a synchronization. Defaults to 1 hour.
-`timeout`  | `number`   | `10000`    | Timeout in milliseconds for requests to fail.
-`delay`    | `number`   | `1000`     | Delay in milliseconds between every request sent.
-`repeat`   | `number`   | `5`        | Number of times to do a request to every peer.
-`peers`    | `string[]` | `[]`       | Array with uri's or id's of the peers to synchronize with.
-`now`      | `function` | `Date.now` | Function returning the local system time.
+Name       | Type                   | Default    | Description
+---------- | ---------------------- | ---------- | ----------------------------------------
+`interval` | `number` or `null`     | `3600000`  | Interval in milliseconds for running a synchronization. Defaults to 1 hour. Set to `null` to disable automatically running synchronizations (synchronize by calling `sync()`).
+`timeout`  | `number`               | `10000`    | Timeout in milliseconds for requests to fail.
+`delay`    | `number`               | `1000`     | Delay in milliseconds between every request sent.
+`repeat`   | `number`               | `5`        | Number of times to do a request to every peer.
+`peers`    | `string[]` or `string` | `[]`       | Array or comma separated string with uri's or id's of the peers to synchronize with.
+`now`      | `function`             | `Date.now` | Function returning the local system time.
 
 ## Methods
 
@@ -74,11 +74,10 @@ Basic usage:
 
 Name                  | Return type | Description
 --------------------- | ----------- | ----------------------------------
+`destroy()`           | none        | Destroy the timesync instance. Stops automatic synchronization. If timesync is currently executing a synchronization, this synchronization will be finished first.
 `now()`               | `number`    | Get the synchronized time. Returns a timestamp. To create a `Date`, call `new Date(time.now())`.
 `on(event, callback)` | `Object`    | Register a callback handler for an event. Returns the timesync instance. See section [Events](#events) for more information.
 `off(event [, callback])` | `Object`    | Unregister a callback handler for an event. If no callback is provided, all callbacks of this event will be removed. Returns the timesync instance. See section [Events](#events) for more information.
-`start()` | none        | Start doing a synchronization every `interval` milliseconds.
-`stop()`  | none        | Stop doing a synchronization every `interval` milliseconds.
 `sync()`  | none        | Do a synchronization with all peers now.
 
 To be able to send and receive messages from peers, `timesync` needs a transport. To hook up a transport like a websocket or http requests, one has to override the `send(id, data)` method of the `timesync` instance, and has to call `ts.receive(id, data)` on incoming messages.
@@ -114,7 +113,7 @@ Name     | Description
 Name      | Type     | Description
 --------- | -------- | --------------------------------------------
 `offset`  | `number` | The offset from system time in milliseconds.
-`options` | `Object` | An object holding all options of the timesync instance. One can safely adjust the options at any time, though some changed options do not have immediate effect (for example a changed `interval` will be applied after the first next synchronization.
+`options` | `Object` | An object holding all options of the timesync instance. One can safely adjust options like `peers` at any time. Not all options can be changed after construction, for example a changed `interval` value will not be applied.
 
 
 # Algorithm

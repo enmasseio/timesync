@@ -14,6 +14,7 @@ function connect(id, peers) {
   var ts = timesync.create({
     peers: [], // start empty, will be updated at the start of every synchronization
     interval: 5000,
+    delay: 200,
     timeout: 1000
   });
 
@@ -58,8 +59,7 @@ function connect(id, peers) {
   }, 1000);
 
   // Create a new Peer with the demo API key
-  //var peer = new Peer(id, {key: 'lwjd5qra8257b9', debug: 1});
-  var peer = new Peer(id, {key: 'bbmqr0jowdtgwrk9', debug: 1});
+  var peer = new Peer(id, {key: 'lwjd5qra8257b9', debug: 1});
   peer.on('open', connectToPeers);
   peer.on('connection', setupConnection);
 

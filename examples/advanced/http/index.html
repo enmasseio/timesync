@@ -10,7 +10,7 @@
   <script>
     var ts = timesync.create({
       peers: ['/timesync'],
-      interval: 5000
+      interval: 10000
     });
 
     ts.on('sync', function (state) {

@@ -133,8 +133,7 @@ function create(options) {
   var timesync = {
     // configurable options
     options: {
-      //id: 'timesync_' + Math.round(Math.random() * 1e5), // some semi-random identifier
-      interval: 60 * 60 * 1000, // interval for doing synchronizations in ms
+      interval: 60 * 60 * 1000, // interval for doing synchronizations in ms. Set to null to disable auto sync
       timeout: 10000, // timeout for requests to fail in ms
       delay: 1000, // delay between requests in ms
       repeat: 5, // number of times to do a request to one peer
@@ -149,7 +148,7 @@ function create(options) {
     _timeout: null,
 
     /** @type {Object.<string, function>} Contains a map with requests in progress */
-    inProgress: {},
+    _inProgress: {},
 
     /**
      * @type {boolean}
@@ -157,9 +156,6 @@ function create(options) {
      * After that, it's set to false and not used anymore.
      */
     _isFirst: true,
-
-    /** @type {boolean} True when running the synchronization every x seconds */
-    _running: true,
 
     /**
      * Send a message to a peer
@@ -182,9 +178,9 @@ function create(options) {
         from = undefined;
       }
 
-      if (data && data.id in timesync.inProgress) {
+      if (data && data.id in timesync._inProgress) {
         // this is a reply
-        timesync.inProgress[data.id](data.result);
+        timesync._inProgress[data.id](data.result);
       } else if (data && data.id !== undefined) {
         // this is a request from an other peer
         // reply with our current time
@@ -208,13 +204,13 @@ function create(options) {
         var id = util.nextId();
 
         var timeout = setTimeout(function () {
-          delete timesync.inProgress[id];
+          delete timesync._inProgress[id];
           reject(new Error("Timeout"));
         }, timesync.options.timeout);
 
-        timesync.inProgress[id] = function (data) {
+        timesync._inProgress[id] = function (data) {
           clearTimeout(timeout);
-          delete timesync.inProgress[id];
+          delete timesync._inProgress[id];
 
           resolve(data);
         };
@@ -343,27 +339,12 @@ function create(options) {
     },
 
     /**
-     * Start synchronizing once per interval
+     * Destroy the timesync instance. Stops automatic synchronization.
+     * If timesync is currently executing a synchronization, this
+     * synchronization will be finished first.
      */
-    start: function () {
-      timesync._running = true;
-
-      timesync.sync().then(function () {
-        timesync._timeout = setTimeout(function () {
-          if (timesync._running) {
-            timesync.start();
-          }
-        }, timesync.options.interval);
-      });
-    },
-
-    /**
-     * Stop synchronizing once per interval
-     */
-    stop: function () {
+    destroy: function () {
       clearTimeout(timesync._timeout);
-      timesync._timeout = null;
-      timesync._running = false;
     }
   };
 
@@ -371,25 +352,31 @@ function create(options) {
   if (options) {
     for (var prop in options) {
       if (options.hasOwnProperty(prop)) {
-        timesync.options[prop] = options[prop];
+        if (prop === "peers" && typeof options.peers === "string") {
+          // split a comma separated string with peers into an array
+          timesync.options.peers = options.peers.split(",").map(function (peer) {
+            return peer.trim();
+          }).filter(function (peer) {
+            return peer !== "";
+          });
+        } else {
+          timesync.options[prop] = options[prop];
+        }
       }
     }
-  }
-
-  // validate configuration
-  if (!Array.isArray(timesync.options.peers)) {
-    timesync.options.peers = [timesync.options.peers];
   }
 
   // turn into an event emitter
   emitter(timesync);
 
-  // start a timer to synchronize once per interval
-  setTimeout(function () {
-    if (timesync._running) {
-      timesync.start();
-    }
-  }, 0);
+  if (timesync.options.interval !== null) {
+    // start an interval to automatically run a synchronization once per interval
+    timesync._timeout = setInterval(timesync.sync, timesync.options.interval);
+
+    // synchronize immediately on the next tick (allows to attach event
+    // handlers before the timesync starts).
+    setTimeout(timesync.sync, 0);
+  }
 
   return timesync;
 }
@@ -412,6 +399,7 @@ exports.wait = wait;
  * @param {number} times
  * @return {Promise}
  */
+// TODO: replace with a more generic whilst(condition, callback) routine?
 exports.repeat = repeat;
 
 
