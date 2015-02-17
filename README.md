@@ -197,7 +197,7 @@ var timesyncServer = require('timesync/server');
 
 Name                          | Return type  | Description
 ----------------------------- | ------------ | ----------------------------------
-`createServer()`              | `http.Server`| Create a new, dedicated http Server. This is just a shortcut for doing `http.createServer(timesyncServer.requestHandler)`.
+`createServer()`              | `http.Server`| Create a new, dedicated http Server. This is just a shortcut for doing `http.createServer( timesyncServer.requestHandler )`.
 `attachServer(server, [path])`| `http.Server`| Attach a request handler for time synchronization requests to an existing http Server. Argument `server` must be an instance of `http.Server`. Argument `path` is optional, and is `/timesync` by default.
 
 
@@ -205,7 +205,7 @@ Name                          | Return type  | Description
 
 Name              | Type       | Description
 ----------------- | ---------- | --------------------------------------------
-`requestHandler`  | `function` | A default request handler, handling requests for the timesync server. Signature is `requestHandler(request, response)`. This handler can be used to attach to an expressjs server, or to create a plain http server by doing `http.createServer(timesyncServer.requestHandler)`.
+`requestHandler`  | `function` | A default request handler, handling requests for the timesync server. Signature is `requestHandler(request, response)`. This handler can be used to attach to an expressjs server, or to create a plain http server by doing `http.createServer( timesyncServer.requestHandler )`.
 
 
 # Protocol
