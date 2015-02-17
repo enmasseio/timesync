@@ -1,18 +1,14 @@
 # timesync
 
-Time synchronization between peers
+Time synchronization between peers.
 
+Usage scenarios:
 
-# Usage scenarios
-
-- client/server:
-  - Clients synchronize their time to that of a single server,
-    via either http requests or a web socket.
-- peer-to-peer:
-  - Clients are connected in a (dynamic) peer-to-peer network using peer.js or
-    WebRTC and converge to a single, common time in the network.
-  - Clients connected to each other via a single channel on PubNub or an other
-    publish/subscribe platform, and converge to a single, common time.
+- **master/slave**: Clients synchronize their time to that of a single server,
+  via either HTTP requests or WebSockets.
+- **peer-to-peer**: Clients are connected in a (dynamic) peer-to-peer network
+  using WebRTC or WebSockets and must converge to a single, common time in the
+  network.
 
 
 # Install
@@ -23,14 +19,18 @@ Install via npm:
 npm install timesync
 ```
 
-# Use
 
-Example usage:
+# Usage
+
+A timesync client can basically connect to one server or multiple peers,
+and will synchronize it's time. The synchronized time can be retrieved via
+the method `now()`, and the client can subscribe to events like `'change'`
+and `'sync'`.
 
 ```js
 // create a timesync instance
 var ts = timesync({
-  peers: [...]
+  peers: [...] // a single server, or multiple peers
 });
 
 // get notified on changes in the offset
@@ -42,12 +42,73 @@ ts.on('change', function (offset) {
 console.log('now:', new Date(ts.now()));
 ```
 
+
+# Example
+
+Here a full usage example with express.js, showing both server and client side.
+`timesync` has build-in support for requests over http and can be used with
+express, a default http server, or other solutions. `timesync` can also be
+used over other transports than http, for example using websockets or webrtc.
+This is demonstrated in the [advanced examples](/examples/advanced).
+
 More examples are available in the [/examples](/examples) folder.
+
+**server.js**
+
+```js
+var express = require('express');
+var timesyncServer = require('timesync/server');
+
+// create an express app
+var port = 8081;
+var app = express();
+app.listen(port);
+console.log('Server listening at http://localhost:' + port);
+
+// serve static index.html
+app.get('/', express.static(__dirname));
+
+// handle timesync requests
+app.use('/timesync', timesyncServer.requestHandler);
+```
+
+**index.html**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- note: for support on older browsers, you will need to load es5-shim and es6-shim -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+
+  <script src="/timesync/timesync.js"></script>
+</head>
+<script>
+  // create a timesync instance
+  var ts = timesync.create({
+    peers: '/timesync',
+    interval: 10000
+  });
+
+  // get notified on changes in the offset
+  ts.on('change', function (offset) {
+    document.write('changed offset: ' + offset + ' ms<br>');
+  });
+
+  // get the synchronized time
+  var now = new Date(ts.now());
+  document.write('now: ' + now.toISOString() + '<br>');
+</script>
+</html>
+```
 
 
 # API
 
-## Construction
+## Client
+
+### Construction
 
 An instance of timesync is created as:
 
@@ -55,7 +116,7 @@ An instance of timesync is created as:
 var ts = timesync(options);
 ```
 
-### Options
+#### Options
 
 The following options are available:
 
@@ -68,9 +129,7 @@ Name       | Type                   | Default    | Description
 `peers`    | `string[]` or `string` | `[]`       | Array or comma separated string with uri's or id's of the peers to synchronize with.
 `now`      | `function`             | `Date.now` | Function returning the local system time.
 
-## Methods
-
-Basic usage:
+### Methods
 
 Name                  | Return type | Description
 --------------------- | ----------- | ----------------------------------
@@ -90,7 +149,7 @@ Name                  | Return type | Description
 `timesync` sends messages using the JSON-RPC protocol, as described in the section [Protocol](#protocol).
 
 
-## Events
+### Events
 
 `timesync` emits events when starting and finishing a synchronization, and when the time offset changes. To listen for events:
 
@@ -108,7 +167,7 @@ Name     | Description
 `sync`   | Emitted when a synchronization is started or finished. Callback are called with a value `'start'` or `'end'` as argument.
 
 
-## Properties
+### Properties
 
 Name      | Type     | Description
 --------- | -------- | --------------------------------------------
@@ -116,21 +175,33 @@ Name      | Type     | Description
 `options` | `Object` | An object holding all options of the timesync instance. One can safely adjust options like `peers` at any time. Not all options can be changed after construction, for example a changed `interval` value will not be applied.
 
 
-# Algorithm
+## Server
 
-`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](A Stream-based Time Synchronization Technique For Networked Computer Games):
+`timesync` comes with a build in server to serve as a master for time synchronization. Clients can adjust their time to that of the server. The server basically just implements a POST request responding with it's current time, and serves the static files `timesync.js` and `timesync.min.js` from the `/dist` folder. It's quite easy to implement this request handler yourself, as is demonstrated in the [advanced examples](/examples/advanced).
 
-> A simple algorithm with these properties is as follows:
->
-> 1. Client stamps current local time on a "time request" packet and sends to server
-> 2. Upon receipt by server, server stamps server-time and returns
-> 3. Upon receipt by client, client subtracts current time from sent time and divides by two to compute latency. It subtracts current time from server time to determine client-server time delta and adds in the half-latency to get the correct clock delta. (So far this algothim is very similar to SNTP)
-> 4. The first result should immediately be used to update the clock since it will get the local clock into at least the right ballpark (at least the right timezone!)
-> 5. The client repeats steps 1 through 3 five or more times, pausing a few seconds each time. Other traffic may be allowed in the interim, but should be minimized for best results
-> 6. The results of the packet receipts are accumulated and sorted in lowest-latency to highest-latency order. The median latency is determined by picking the mid-point sample from this ordered list.
-> 7. All samples above approximately 1 standard-deviation from the median are discarded and the remaining samples are averaged using an arithmetic mean.
+The protocol used by the server is described in the section [Protocol](#protocol).
 
-This algorithm assumes multiple clients synchronizing with a single server. In case of multiple peers, `timesync` will take the average offset of all peers (excluding itself) as offset.
+### Load
+
+The server can be loaded in node.js as:
+
+```js
+var timesyncServer = require('timesync/server');
+```
+
+### Methods
+
+Name                          | Return type  | Description
+----------------------------- | ------------ | ----------------------------------
+`createServer()`              | `http.Server`| Create a new, dedicated http Server. This is just a shortcut for doing `http.createServer(timesyncServer.requestHandler)`.
+`attachServer(server, [path])`| `http.Server`| Attach a request handler for time synchronization requests to an existing http Server. Argument `server` must be an instance of `http.Server`. Argument `path` is optional, and is `/timesync` by default.
+
+
+### Properties
+
+Name              | Type       | Description
+----------------- | ---------- | --------------------------------------------
+`requestHandler`  | `function` | A default request handler, handling requests for the timesync server. Signature is `requestHandler(request, response)`. This handler can be used to attach to an expressjs server, or to create a plain http server by doing `http.createServer(timesyncServer.requestHandler)`.
 
 
 # Protocol
@@ -150,7 +221,37 @@ The receiving peer replies with the same id and it's current time:
 The sending peer matches the returned message by id and uses the result to adjust it's offset.
 
 
+# Algorithm
+
+`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](A Stream-based Time Synchronization Technique For Networked Computer Games):
+
+> A simple algorithm with these properties is as follows:
+>
+> 1. Client stamps current local time on a "time request" packet and sends to server
+> 2. Upon receipt by server, server stamps server-time and returns
+> 3. Upon receipt by client, client subtracts current time from sent time and divides by two to compute latency. It subtracts current time from server time to determine client-server time delta and adds in the half-latency to get the correct clock delta. (So far this algothim is very similar to SNTP)
+> 4. The first result should immediately be used to update the clock since it will get the local clock into at least the right ballpark (at least the right timezone!)
+> 5. The client repeats steps 1 through 3 five or more times, pausing a few seconds each time. Other traffic may be allowed in the interim, but should be minimized for best results
+> 6. The results of the packet receipts are accumulated and sorted in lowest-latency to highest-latency order. The median latency is determined by picking the mid-point sample from this ordered list.
+> 7. All samples above approximately 1 standard-deviation from the median are discarded and the remaining samples are averaged using an arithmetic mean.
+
+This algorithm assumes multiple clients synchronizing with a single server. In case of multiple peers, `timesync` will take the average offset of all peers (excluding itself) as offset.
+
+
 # Resources
 
 - [A Stream-based Time Synchronization Technique For Networked Computer Games](http://www.mine-control.com/zack/timesync/timesync.html)
 - [Network Time Protocol](http://www.wikiwand.com/en/Network_Time_Protocol)
+
+
+# Build
+
+To build the library:
+
+    npm run build
+
+This will generate the files `timesync.js` and `timesync.min.js` in the folder `/dist`.
+
+To automatically build on changes, run:
+
+    npm run watch

@@ -1,6 +1,6 @@
 # History
 
-## not yet released, version 0.1.0
+## 2015-02-17, version 0.1.0
 
 - The first usable version.
 

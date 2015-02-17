@@ -50,6 +50,114 @@ function emitter(obj) {
 },{}],2:[function(require,module,exports){
 "use strict";
 
+exports.fetch = fetch;
+exports.post = post;
+function fetch(method, url, body, headers, callback) {
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4) {
+        var contentType = xhr.getResponseHeader("Content-Type");
+        if (contentType.indexOf("json") !== -1) {
+          // return JSON object
+          callback(null, JSON.parse(xhr.responseText), xhr.status);
+        } else {
+          // return text
+          callback(null, xhr.responseText, xhr.status);
+        }
+      }
+    };
+    if (headers) {
+      for (var name in headers) {
+        if (headers.hasOwnProperty(name)) {
+          xhr.setRequestHeader(name, headers[name]);
+        }
+      }
+    }
+
+    xhr.open(method, url, true);
+
+    if (typeof body === "string") {
+      xhr.send(body);
+    } else if (body) {
+      // body is an object
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify(body));
+    } else {
+      xhr.send();
+    }
+  } catch (err) {
+    callback(err, null, 0);
+  }
+}
+
+function post(url, body, callback) {
+  fetch("POST", url, body, null, callback);
+}
+exports.__esModule = true;
+
+},{}],3:[function(require,module,exports){
+"use strict";
+
+var isBrowser = typeof window !== "undefined";
+
+// FIXME: how to do conditional loading this with ES6 modules?
+module.exports = isBrowser ? require("./request.browser") : require("./request.node");
+
+},{"./request.browser":2,"./request.node":4}],4:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+exports.post = post;
+var http = _interopRequire(require("http"));
+
+var url = _interopRequire(require("url"));
+
+var parseUrl = url.parse;
+
+function post(url, body, callback) {
+  var data = body === "string" ? body : JSON.stringify(body);
+  var urlObj = parseUrl(url);
+
+  // An object of options to indicate where to post to
+  var options = {
+    host: urlObj.hostname,
+    port: urlObj.port,
+    path: urlObj.path,
+    method: "POST",
+    headers: { "Content-Length": data.length }
+  };
+
+  if (body !== "string") {
+    options.headers["Content-Type"] = "application/json";
+  }
+
+  var req = http.request(options, function (res) {
+    res.setEncoding("utf8");
+    res.on("data", function (data) {
+      var contentType = res.headers["content-type"];
+      var isJSON = contentType && contentType.indexOf("json") !== -1;
+      var body = isJSON ? JSON.parse(data) : data;
+
+      callback && callback(null, body, res.statusCode);
+      callback = null;
+    });
+  });
+
+  req.on("error", function (err) {
+    callback && callback(err, null, null);
+    callback = null;
+  });
+
+  req.write(data);
+  req.end();
+}
+exports.__esModule = true;
+
+},{"http":undefined,"url":undefined}],5:[function(require,module,exports){
+"use strict";
+
 // basic statistical functions
 
 exports.compare = compare;
@@ -102,7 +210,7 @@ function median(arr) {
 }
 exports.__esModule = true;
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -126,6 +234,8 @@ exports.create = create;
 var util = _interopRequireWildcard(require("./util.js"));
 
 var stat = _interopRequireWildcard(require("./stat.js"));
+
+var request = _interopRequireWildcard(require("./request/request"));
 
 var emitter = _interopRequire(require("./emitter.js"));
 
@@ -164,7 +274,19 @@ function create(options) {
      * @param {*} data
      */
     send: function (to, data) {
-      throw new Error("Cannot execute abstract method send");
+      //console.log('send', to, data, typeof data); // TODO: cleanup
+      try {
+        request.post(to, data, function (err, res) {
+          //console.log('receive', err, res); // TODO: cleanup
+          if (err) {
+            console.log("Error", err);
+          } else {
+            timesync.receive(to, res);
+          }
+        });
+      } catch (err) {
+        console.log("Error", err);
+      }
     },
 
     /**
@@ -382,7 +504,7 @@ function create(options) {
 }
 exports.__esModule = true;
 
-},{"./emitter.js":1,"./stat.js":2,"./util.js":4}],4:[function(require,module,exports){
+},{"./emitter.js":1,"./request/request":3,"./stat.js":5,"./util.js":7}],7:[function(require,module,exports){
 "use strict";
 
 /**
@@ -437,5 +559,5 @@ function wait(delay) {
 var _id = 0;
 exports.__esModule = true;
 
-},{}]},{},[3])(3)
+},{}]},{},[6])(6)
 });

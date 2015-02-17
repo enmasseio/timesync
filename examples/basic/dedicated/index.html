@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- include es5-shim and es5-shim when support for older browsers is needed -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
+
+  <script src="http://localhost:8081/timesync/timesync.js"></script>
+</head>
+<body>
+  <script>
+    // create a timesync client
+    var ts = timesync.create({
+      peers: 'http://localhost:8081/timesync',
+      interval: 10000
+    });
+
+    // get notified on changes in the offset
+    ts.on('change', function (offset) {
+      document.write('changed offset: ' + offset + ' ms<br>');
+    });
+
+    // get synchronized time
+    var now = new Date(ts.now());
+    document.write('now: ' + now.toISOString() + ' ms<br>');
+  </script>
+</body>
+</html>
