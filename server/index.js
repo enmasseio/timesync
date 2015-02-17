@@ -66,9 +66,7 @@ function createRoute (path) {
 }
 
 /**
- * A request handler for time requests. Access control allow origin is set
- * to '*' by default. TODO: make this customizable?
- * - In case of OPTIONS, a 204 will be returned.
+ * A request handler for time requests.
  * - In case of POST, an object containing the current timestamp will be
  *   returned.
  * - In case of GET .../timesync.js or GET .../timesync.min.js, the static
@@ -80,33 +78,20 @@ function createRoute (path) {
 exports.requestHandler = function (req, res) {
   debug('request ' + req.method + ' ' + req.url + ' ' + req.method);
 
-  // TODO: better to remove Access-Control-Allow-Origin: * for better default security...
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method == 'POST') {
+    if (!filename) {
+      // a time request
+      return sendTimestamp(req, res);
+    }
+  }
 
-  switch (req.method) {
-    case 'OPTIONS':
-      res.writeHead(204);
-      res.end();
-      return;
-
-    case 'POST':
-      if (!filename) {
-        // a time request
-        return sendTimestamp(req, res);
-      }
-      break;
-
-    case 'GET':
-      var match = req.url.match(/\/(timesync(.min)?.js)$/);
-      var filename = match && match[1];
-      if (filename === 'timesync.js' || filename === 'timesync.min.js') {
-        // static file handler
-        return sendFile(res, __dirname + '/../dist/' + filename);
-      }
-      break;
+  if (req.method == 'GET') {
+    var match = req.url.match(/\/(timesync(.min)?.js)$/);
+    var filename = match && match[1];
+    if (filename === 'timesync.js' || filename === 'timesync.min.js') {
+      // static file handler
+      return sendFile(res, __dirname + '/../dist/' + filename);
+    }
   }
 
   res.writeHead(404);
