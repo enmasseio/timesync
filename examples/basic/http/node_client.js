@@ -17,5 +17,7 @@ ts.on('change', function (offset) {
 });
 
 // get synchronized time
-var now = new Date(ts.now());
-console.log('now: ' + now.toISOString() + ' ms');
+setInterval(function () {
+  var now = new Date(ts.now());
+  console.log('now: ' + now.toISOString() + ' ms');
+}, 1000);

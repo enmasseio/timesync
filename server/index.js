@@ -80,6 +80,7 @@ function createRoute (path) {
 exports.requestHandler = function (req, res) {
   debug('request ' + req.method + ' ' + req.url + ' ' + req.method);
 
+  // TODO: better to remove Access-Control-Allow-Origin: * for better default security...
   // CORS
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');

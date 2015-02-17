@@ -11,7 +11,7 @@
   <script>
     // create a timesync client
     var ts = timesync.create({
-      peers: 'http://localhost:8081/timesync',
+      server: 'http://localhost:8081/timesync',
       interval: 10000
     });
 
@@ -21,8 +21,10 @@
     });
 
     // get synchronized time
-    var now = new Date(ts.now());
-    document.write('now: ' + now.toISOString() + ' ms<br>');
+    setInterval(function () {
+      var now = new Date(ts.now());
+      document.write('now: ' + now.toISOString() + ' ms<br>');
+    }, 1000);
   </script>
 </body>
 </html>

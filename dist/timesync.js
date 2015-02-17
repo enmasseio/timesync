@@ -248,6 +248,7 @@ function create(options) {
       delay: 1000, // delay between requests in ms
       repeat: 5, // number of times to do a request to one peer
       peers: [], // uri's or id's of the peers
+      server: null, // uri of a single server (master/slave configuration)
       now: Date.now // function returning the system time
     },
 
@@ -274,10 +275,8 @@ function create(options) {
      * @param {*} data
      */
     send: function (to, data) {
-      //console.log('send', to, data, typeof data); // TODO: cleanup
       try {
         request.post(to, data, function (err, res) {
-          //console.log('receive', err, res); // TODO: cleanup
           if (err) {
             console.log("Error", err);
           } else {
@@ -353,7 +352,7 @@ function create(options) {
     sync: function () {
       timesync.emit("sync", "start");
 
-      var peers = timesync.options.peers;
+      var peers = timesync.options.server ? [timesync.options.server] : timesync.options.peers;
       return Promise.all(peers.map(function (peer) {
         return timesync._syncWithPeer(peer);
       })).then(function (all) {
@@ -472,6 +471,10 @@ function create(options) {
 
   // apply provided options
   if (options) {
+    if (options.server && options.peers) {
+      throw new Error("Configure either option \"peers\" or \"server\", not both.");
+    }
+
     for (var prop in options) {
       if (options.hasOwnProperty(prop)) {
         if (prop === "peers" && typeof options.peers === "string") {

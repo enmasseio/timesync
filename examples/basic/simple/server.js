@@ -7,7 +7,7 @@ var server = timesyncServer.createServer();
 server.listen(PORT);
 console.log('Server listening at http://localhost:' + PORT);
 
-// Alternatively, a plain http server can be started like:
+// Alternatively, a plain http server can be created like:
 //     var http = require('http');
 //     var server = http.createServer(timesyncServer.requestHandler);
 //     server.listen(PORT);

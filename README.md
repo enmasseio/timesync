@@ -30,7 +30,8 @@ and `'sync'`.
 ```js
 // create a timesync instance
 var ts = timesync({
-  peers: [...] // a single server, or multiple peers
+  server: '...',  // either a single server,
+  peers: [...]    // or multiple peers
 });
 
 // get notified on changes in the offset
@@ -87,7 +88,7 @@ app.use('/timesync', timesyncServer.requestHandler);
 <script>
   // create a timesync instance
   var ts = timesync.create({
-    peers: '/timesync',
+    server: '/timesync',
     interval: 10000
   });
 
@@ -96,9 +97,11 @@ app.use('/timesync', timesyncServer.requestHandler);
     document.write('changed offset: ' + offset + ' ms<br>');
   });
 
-  // get the synchronized time
-  var now = new Date(ts.now());
-  document.write('now: ' + now.toISOString() + '<br>');
+  // get synchronized time
+  setInterval(function () {
+    var now = new Date(ts.now());
+    document.write('now: ' + now.toISOString() + ' ms<br>');
+  }, 1000);
 </script>
 </html>
 ```
@@ -122,12 +125,13 @@ The following options are available:
 
 Name       | Type                   | Default    | Description
 ---------- | ---------------------- | ---------- | ----------------------------------------
-`interval` | `number` or `null`     | `3600000`  | Interval in milliseconds for running a synchronization. Defaults to 1 hour. Set to `null` to disable automatically running synchronizations (synchronize by calling `sync()`).
-`timeout`  | `number`               | `10000`    | Timeout in milliseconds for requests to fail.
 `delay`    | `number`               | `1000`     | Delay in milliseconds between every request sent.
-`repeat`   | `number`               | `5`        | Number of times to do a request to every peer.
-`peers`    | `string[]` or `string` | `[]`       | Array or comma separated string with uri's or id's of the peers to synchronize with.
+`interval` | `number` or `null`     | `3600000`  | Interval in milliseconds for running a synchronization. Defaults to 1 hour. Set to `null` to disable automatically running synchronizations (synchronize by calling `sync()`).
 `now`      | `function`             | `Date.now` | Function returning the local system time.
+`peers`    | `string[]` or `string` | `[]`       | Array or comma separated string with uri's or id's of the peers to synchronize with. Cannot be used in conjunction with option `server`.
+`repeat`   | `number`               | `5`        | Number of times to do a request to every peer.
+`server`   | `string`               | none       | Url of a single server in case of a master/slave configuration. Cannot be used in conjunction with option `peers`.
+`timeout`  | `number`               | `10000`    | Timeout in milliseconds for requests to fail.
 
 ### Methods
 

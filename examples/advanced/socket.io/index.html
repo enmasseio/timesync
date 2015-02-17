@@ -8,7 +8,7 @@
   var socket1 = io('http://localhost:8081');
 
   var ts = timesync.create({
-    peers: [socket1],
+    server: socket1,
     interval: 5000
   });
 

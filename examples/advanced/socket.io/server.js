@@ -11,6 +11,7 @@ function handler (req, res) {
   console.log('request', req.url);
 
   if (req.url === '/timesync/timesync.js') {
+    res.setHeader('Content-Type', 'application/javascript');
     return sendFile('../../../dist/timesync.js', res);
   }
 
