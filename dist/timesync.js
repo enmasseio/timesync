@@ -94,7 +94,9 @@ function fetch(method, url, body, headers, callback) {
 function post(url, body, callback) {
   fetch("POST", url, body, null, callback);
 }
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 },{}],3:[function(require,module,exports){
 "use strict";
@@ -153,7 +155,9 @@ function post(url, body, callback) {
   req.write(data);
   req.end();
 }
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 },{"http":undefined,"url":undefined}],5:[function(require,module,exports){
 "use strict";
@@ -188,18 +192,18 @@ function std(arr) {
 }
 
 function variance(arr) {
-  if (arr.length < 2) return 0;
-
-  var _mean = mean(arr);
+  if (arr.length < 2) {
+    return 0;
+  }var _mean = mean(arr);
   return arr.map(function (x) {
     return Math.pow(x - _mean, 2);
   }).reduce(add) / (arr.length - 1);
 }
 
 function median(arr) {
-  if (arr.length < 2) return arr[0];
-
-  var sorted = arr.slice().sort(compare);
+  if (arr.length < 2) {
+    return arr[0];
+  }var sorted = arr.slice().sort(compare);
   if (sorted.length % 2 === 0) {
     // even
     return (arr[arr.length / 2 - 1] + arr[arr.length / 2]) / 2;
@@ -208,7 +212,9 @@ function median(arr) {
     return arr[(arr.length - 1) / 2];
   }
 }
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 },{}],6:[function(require,module,exports){
 "use strict";
@@ -278,13 +284,13 @@ function create(options) {
       try {
         request.post(to, data, function (err, res) {
           if (err) {
-            console.log("Error", err);
+            emitError(err);
           } else {
             timesync.receive(to, res);
           }
         });
       } catch (err) {
-        console.log("Error", err);
+        emitError(err);
       }
     },
 
@@ -494,18 +500,37 @@ function create(options) {
   // turn into an event emitter
   emitter(timesync);
 
+  /**
+   * Emit an error message. If there are no listeners, the error is outputted
+   * to the console.
+   * @param {Error} err
+   */
+  function emitError(err) {
+    if (timesync.list("error").length > 0) {
+      timesync.emit("error", err);
+    } else {
+      console.log("Error", err);
+    }
+  }
+
   if (timesync.options.interval !== null) {
     // start an interval to automatically run a synchronization once per interval
     timesync._timeout = setInterval(timesync.sync, timesync.options.interval);
 
     // synchronize immediately on the next tick (allows to attach event
     // handlers before the timesync starts).
-    setTimeout(timesync.sync, 0);
+    setTimeout(function () {
+      timesync.sync()["catch"](function (err) {
+        return emitError(err);
+      });
+    }, 0);
   }
 
   return timesync;
 }
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 },{"./emitter.js":1,"./request/request":3,"./stat.js":5,"./util.js":7}],7:[function(require,module,exports){
 "use strict";
@@ -560,7 +585,9 @@ function wait(delay) {
   return _id++;
 }
 var _id = 0;
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 },{}]},{},[6])(6)
 });

@@ -168,6 +168,7 @@ Available events:
 Name     | Description
 ---------| ----------
 `change` | Emitted when the offset is changed. This can only happen during a synchronization. Callbacks are called with the new offset (a number) as argument.
+`error`  | Emitted when an error occurred. Callbacks are called with the the error as argument.
 `sync`   | Emitted when a synchronization is started or finished. Callback are called with a value `'start'` or `'end'` as argument.
 
 
