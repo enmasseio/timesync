@@ -3,6 +3,7 @@
 ## not yet released, version 0.2.0
 
 - Implemented an `'error'` event.
+- Fixed unnecessary wait of 1 sec before the new offset is applied.
 
 
 ## 2015-02-17, version 0.1.0

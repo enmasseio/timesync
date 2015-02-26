@@ -393,15 +393,25 @@ function create(options) {
      */
     _syncWithPeer: function (peer) {
       // retrieve the offset of a peer, then wait 1 sec
-      function syncAndWait() {
+      var all = [];
+
+      function sync() {
         return timesync._getOffset(peer).then(function (result) {
-          return util.wait(timesync.options.delay).then(function () {
-            return result;
-          });
+          return all.push(result);
         });
       }
 
-      return util.repeat(syncAndWait, timesync.options.repeat).then(function (all) {
+      function waitAndSync() {
+        return util.wait(timesync.options.delay).then(sync);
+      }
+
+      function notDone() {
+        return all.length < timesync.options.repeat;
+      }
+
+      return sync().then(function () {
+        return util.whilst(notDone, waitAndSync);
+      }).then(function () {
         // filter out null results
         var results = all.filter(function (result) {
           return result !== null;
@@ -549,8 +559,16 @@ exports.wait = wait;
  * @param {number} times
  * @return {Promise}
  */
-// TODO: replace with a more generic whilst(condition, callback) routine?
 exports.repeat = repeat;
+
+
+/**
+ * Repeat an asynchronous callback function whilst
+ * @param {function} condition   A function returning true or false
+ * @param {function} callback    A callback returning a Promise
+ * @returns {Promise}
+ */
+exports.whilst = whilst;
 
 
 /**
@@ -581,6 +599,30 @@ function wait(delay) {
 
     recurse();
   });
+}function whilst(condition, callback) {
+  return new Promise(function (resolve, reject) {
+    function recurse() {
+      if (condition()) {
+        callback().then(function () {
+          return recurse();
+        });
+      } else {
+        resolve();
+      }
+    }
+
+    recurse();
+  });
+}
+
+/**
+ * Test whether an object is a Promise. Checks for the precense of
+ * functions then and catch on the object.
+ * @param {*} obj
+ * @returns {boolean} Returns true when a Promise.
+ */
+function isPromise(obj) {
+  return obj && typeof obj.then === "function" && typeof obj["catch"] === "function";
 }function nextId() {
   return _id++;
 }
