@@ -4,15 +4,16 @@
 module.exports = typeof window === "undefined" || typeof window.Promise === "undefined" ? require("promise") : window.Promise;
 
 },{"promise":9}],2:[function(require,module,exports){
-"use strict";
-
 /**
  * Turn an object into an event emitter. Attaches methods `on`, `off`,
  * `emit`, and `list`
  * @param {Object} obj
  * @return {Object} Returns the original object, extended with emitter functions
  */
+"use strict";
+
 module.exports = emitter;
+
 function emitter(obj) {
   var _callbacks = {};
 
@@ -57,6 +58,10 @@ function emitter(obj) {
 
 exports.fetch = fetch;
 exports.post = post;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 function fetch(method, url, body, headers, callback) {
   try {
     var xhr = new XMLHttpRequest();
@@ -99,9 +104,6 @@ function fetch(method, url, body, headers, callback) {
 function post(url, body, callback) {
   fetch("POST", url, body, null, callback);
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{}],4:[function(require,module,exports){
 "use strict";
@@ -117,6 +119,10 @@ module.exports = isBrowser ? require("./request.browser") : require("./request.n
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 exports.post = post;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var http = _interopRequire(require("http"));
 
 var url = _interopRequire(require("url"));
@@ -160,14 +166,11 @@ function post(url, body, callback) {
   req.write(data);
   req.end();
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"http":undefined,"url":undefined}],6:[function(require,module,exports){
-"use strict";
-
 // basic statistical functions
+
+"use strict";
 
 exports.compare = compare;
 exports.add = add;
@@ -176,6 +179,10 @@ exports.mean = mean;
 exports.std = std;
 exports.variance = variance;
 exports.median = median;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 function compare(a, b) {
   return a > b ? 1 : a < b ? -1 : 0;
 }
@@ -211,15 +218,12 @@ function median(arr) {
   }var sorted = arr.slice().sort(compare);
   if (sorted.length % 2 === 0) {
     // even
-    return (arr[arr.length / 2 - 1] + arr[arr.length / 2]) / 2;
+    return (sorted[arr.length / 2 - 1] + sorted[arr.length / 2]) / 2;
   } else {
     // odd
-    return arr[(arr.length - 1) / 2];
+    return sorted[(arr.length - 1) / 2];
   }
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{}],7:[function(require,module,exports){
 "use strict";
@@ -234,6 +238,9 @@ var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? ob
  * @return {Object} Returns a new timesync instance
  */
 exports.create = create;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 /**
  * timesync
  *
@@ -250,7 +257,8 @@ var request = _interopRequireWildcard(require("./request/request"));
 
 var emitter = _interopRequire(require("./emitter.js"));
 
-var Promise = require("./Promise");function create(options) {
+var Promise = require("./Promise");
+function create(options) {
   var timesync = {
     // configurable options
     options: {
@@ -285,7 +293,7 @@ var Promise = require("./Promise");function create(options) {
      * @param {string} to
      * @param {*} data
      */
-    send: function (to, data) {
+    send: function send(to, data) {
       try {
         request.post(to, data, function (err, res) {
           if (err) {
@@ -304,7 +312,7 @@ var Promise = require("./Promise");function create(options) {
      * @param {string | undefined} [from]
      * @param {*} data
      */
-    receive: function (from, data) {
+    receive: function receive(from, data) {
       if (data === undefined) {
         data = from;
         from = undefined;
@@ -331,7 +339,7 @@ var Promise = require("./Promise");function create(options) {
      * @param {*} [params]
      * @returns {Promise}
      */
-    rpc: function (to, method, params) {
+    rpc: function rpc(to, method, params) {
       return new Promise(function (resolve, reject) {
         var id = util.nextId();
 
@@ -360,7 +368,7 @@ var Promise = require("./Promise");function create(options) {
      * Synchronize now with all configured peers
      * Docs: http://www.mine-control.com/zack/timesync/timesync.html
      */
-    sync: function () {
+    sync: function sync() {
       timesync.emit("sync", "start");
 
       var peers = timesync.options.server ? [timesync.options.server] : timesync.options.peers;
@@ -385,7 +393,7 @@ var Promise = require("./Promise");function create(options) {
      * @returns {boolean}
      * @private
      */
-    _validOffset: function (offset) {
+    _validOffset: function _validOffset(offset) {
       return offset !== null && !isNaN(offset) && isFinite(offset);
     },
 
@@ -396,7 +404,7 @@ var Promise = require("./Promise");function create(options) {
      *                                    or null if failed to sync with this peer.
      * @private
      */
-    _syncWithPeer: function (peer) {
+    _syncWithPeer: function _syncWithPeer(peer) {
       // retrieve the offset of a peer, then wait 1 sec
       var all = [];
 
@@ -447,7 +455,7 @@ var Promise = require("./Promise");function create(options) {
      * @returns {Promise.<{roundtrip: number, offset: number} | null>}
      * @private
      */
-    _getOffset: function (peer) {
+    _getOffset: function _getOffset(peer) {
       var start = Date.now(); // local system time
 
       return timesync.rpc(peer, "timesync").then(function (timestamp) {
@@ -476,7 +484,7 @@ var Promise = require("./Promise");function create(options) {
      * Get the current time
      * @returns {number} Returns a timestamp
      */
-    now: function () {
+    now: function now() {
       return timesync.options.now() + timesync.offset;
     },
 
@@ -485,7 +493,7 @@ var Promise = require("./Promise");function create(options) {
      * If timesync is currently executing a synchronization, this
      * synchronization will be finished first.
      */
-    destroy: function () {
+    destroy: function destroy() {
       clearTimeout(timesync._timeout);
     }
   };
@@ -543,20 +551,18 @@ var Promise = require("./Promise");function create(options) {
 
   return timesync;
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"./Promise":1,"./emitter.js":2,"./request/request":4,"./stat.js":6,"./util.js":8}],8:[function(require,module,exports){
-"use strict";
+
 
 /**
  * Resolve a promise after a delay
  * @param {number} delay    A delay in milliseconds
  * @returns {Promise} Resolves after given delay
  */
-exports.wait = wait;
+"use strict";
 
+exports.wait = wait;
 
 /**
  * Repeat a given asynchronous function a number of times
@@ -566,7 +572,6 @@ exports.wait = wait;
  */
 exports.repeat = repeat;
 
-
 /**
  * Repeat an asynchronous callback function whilst
  * @param {function} condition   A function returning true or false
@@ -575,17 +580,22 @@ exports.repeat = repeat;
  */
 exports.whilst = whilst;
 
-
 /**
  * Simple id generator
  * @returns {number} Returns a new id
  */
 exports.nextId = nextId;
-var Promise = require("./Promise");function wait(delay) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var Promise = require("./Promise");
+function wait(delay) {
   return new Promise(function (resolve) {
     setTimeout(resolve, delay);
   });
-}function repeat(fn, times) {
+}
+
+function repeat(fn, times) {
   return new Promise(function (resolve, reject) {
     var count = 0;
     var results = [];
@@ -604,7 +614,9 @@ var Promise = require("./Promise");function wait(delay) {
 
     recurse();
   });
-}function whilst(condition, callback) {
+}
+
+function whilst(condition, callback) {
   return new Promise(function (resolve, reject) {
     function recurse() {
       if (condition()) {
@@ -618,13 +630,13 @@ var Promise = require("./Promise");function wait(delay) {
 
     recurse();
   });
-}function nextId() {
+}
+
+function nextId() {
   return _id++;
 }
+
 var _id = 0;
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"./Promise":1}],9:[function(require,module,exports){
 'use strict';

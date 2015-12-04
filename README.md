@@ -253,6 +253,7 @@ This algorithm assumes multiple clients synchronizing with a single server. In c
 
 To build the library:
 
+    npm install
     npm run build
 
 This will generate the files `timesync.js` and `timesync.min.js` in the folder `/dist`.

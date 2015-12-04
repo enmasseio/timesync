@@ -1,6 +1,6 @@
 {
   "name": "timesync",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
   "main": "./dist/timesync.min.js",
