@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
-  "main": "./dist/timesync.min.js",
+  "main": "./dist/timesync.js",
   "keywords": [
     "time",
     "synchronization",
@@ -19,8 +19,7 @@
   "dependencies": {
     "body-parser": "^1.11.0",
     "debug": "^2.1.1",
-    "express": "^4.11.2",
-    "promise": "^6.1.0"
+    "express": "^4.11.2"
   },
   "devDependencies": {
     "babelify": "^5.0.3",
