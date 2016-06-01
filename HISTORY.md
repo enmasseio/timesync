@@ -1,5 +1,10 @@
 # History
 
+## 2016-06-01, version 0.2.1
+
+- Fixed #6: error when loading `timesync` in a node.js client.
+
+
 ## 2015-12-04, version 0.2.0
 
 - Implemented an `'error'` event.

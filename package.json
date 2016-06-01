@@ -30,7 +30,7 @@
     "watch": "^0.13.0"
   },
   "scripts": {
-    "bundle": "browserify lib/timesync.js -t babelify -s timesync -o dist/timesync.js --no-builtins",
+    "bundle": "browserify lib/timesync.js -t babelify -s timesync -o dist/timesync.js --bare",
     "minify": "uglifyjs dist/timesync.js -o dist/timesync.min.js",
     "build": "npm run bundle; npm run minify",
     "watch": "watch 'npm run build' lib"
