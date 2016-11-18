@@ -100,27 +100,16 @@ exports.requestHandler = function (req, res) {
 
 
 function sendTimestamp(req, res) {
-  var body = '';
-  req.on('data', function (data) {
-    body += data;
 
-    // Too much POST data, kill the connection!
-    if (body.length > 1e6) {
-      req.connection.destroy();
-    }
-  });
-  req.on('end', function () {
-    var input = JSON.parse(body);
+  var body = req.body;
+  var data = {
+    id: 'id' in body ? body.id : null,
+    result: Date.now()
+  };
 
-    var data = {
-      id: 'id' in input ? input.id : null,
-      result: Date.now()
-    };
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).send(JSON.stringify(data));
 
-    res.setHeader('Content-Type', 'application/json');
-    res.writeHead(200);
-    res.end(JSON.stringify(data));
-  });
 }
 
 
