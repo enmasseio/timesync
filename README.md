@@ -228,7 +228,7 @@ The sending peer matches the returned message by id and uses the result to adjus
 
 # Algorithm
 
-`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](A Stream-based Time Synchronization Technique For Networked Computer Games):
+`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](http://www.mine-control.com/zack/timesync/timesync.html):
 
 > A simple algorithm with these properties is as follows:
 >
