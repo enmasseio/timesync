@@ -119,6 +119,7 @@ function readRequestBody (req, callback) {
 
     // Too much POST data, kill the connection!
     if (body.length > 1e6) {
+      callback(new Error('Too much post data. Killing connection...'), null);
       req.connection.destroy();
     }
   });
