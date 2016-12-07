@@ -128,7 +128,7 @@ function readRequestBody (req, callback) {
   });
 }
 
-function sendTimeStampResponse (res, id) {
+function sendTimeStampResponse (res, body) {
 
   var data = {
     id: 'id' in body ? body.id : null,

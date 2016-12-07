@@ -116,7 +116,9 @@ module.exports = isBrowser ? require("./request.browser") : require("./request.n
 },{"./request.browser":3,"./request.node":5}],5:[function(require,module,exports){
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _interopRequire = function _interopRequire(obj) {
+  return obj && obj.__esModule ? obj["default"] : obj;
+};
 
 exports.post = post;
 Object.defineProperty(exports, "__esModule", {
@@ -228,9 +230,13 @@ function median(arr) {
 },{}],7:[function(require,module,exports){
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _interopRequire = function _interopRequire(obj) {
+  return obj && obj.__esModule ? obj["default"] : obj;
+};
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
+var _interopRequireWildcard = function _interopRequireWildcard(obj) {
+  return obj && obj.__esModule ? obj : { "default": obj };
+};
 
 /**
  * Factory function to create a timesync instance
