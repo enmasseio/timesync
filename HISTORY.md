@@ -1,5 +1,11 @@
 # History
 
+## 2016-12-10, version 0.2.2
+
+- Fixed library not working as part of a browserify setup. Thanks @SupremeTechnopriest.
+- Fixed `sendTimestamp` not working in an express application. Thanks @SupremeTechnopriest.
+
+
 ## 2016-06-01, version 0.2.1
 
 - Fixed #6: error when loading `timesync` in a node.js client.
