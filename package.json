@@ -34,5 +34,10 @@
     "minify": "uglifyjs dist/timesync.js -o dist/timesync.min.js",
     "build": "npm run bundle; npm run minify",
     "watch": "watch 'npm run build' lib"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
   }
 }

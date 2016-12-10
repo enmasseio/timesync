@@ -100,27 +100,53 @@ exports.requestHandler = function (req, res) {
 
 
 function sendTimestamp(req, res) {
+  if (req.body) {
+    // express.js or similar
+    sendTimeStampResponse(res, req.body);
+  }
+  else {
+    // node.js
+    readRequestBody(req, function (err, body) {
+      sendTimeStampResponse(res, body);
+    });
+  }
+}
+
+function readRequestBody (req, callback) {
   var body = '';
   req.on('data', function (data) {
     body += data;
 
     // Too much POST data, kill the connection!
     if (body.length > 1e6) {
+      callback(new Error('Too much post data. Killing connection...'), null);
       req.connection.destroy();
     }
   });
   req.on('end', function () {
-    var input = JSON.parse(body);
+    callback(null, JSON.parse(body));
+  });
+}
 
-    var data = {
-      id: 'id' in input ? input.id : null,
-      result: Date.now()
-    };
+function sendTimeStampResponse (res, body) {
 
-    res.setHeader('Content-Type', 'application/json');
+  var data = {
+    id: 'id' in body ? body.id : null,
+    result: Date.now()
+  };
+
+  // Set content-type header
+  res.setHeader('Content-Type', 'application/json');
+
+  if(res.status && res.send) {
+    // express.js or similar
+    res.status(200).send(JSON.stringify(data));
+  } else {
+    // node.js
     res.writeHead(200);
     res.end(JSON.stringify(data));
-  });
+  }
+
 }
 
 
