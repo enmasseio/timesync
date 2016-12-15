@@ -1,5 +1,10 @@
 # History
 
+## 2016-12-15, version 0.2.3
+
+- Fixed some of the browser examples not working on Firefox.
+
+
 ## 2016-12-10, version 0.2.2
 
 - Fixed library not working as part of a browserify setup. Thanks @SupremeTechnopriest.
