@@ -7,8 +7,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="/timesync/timesync.js"></script>
-</head>
-<body>
+
   <script>
     var ts = timesync.create({
       peers: ['/timesync'],
@@ -16,22 +15,22 @@
     });
 
     ts.on('sync', function (state) {
-      document.write('sync ' + state + '<br>');
+      console.log('sync ' + state);
     });
 
     ts.on('change', function (offset) {
-      document.write('changed offset: ' + offset + ' ms<br>');
+      console.log('changed offset: ' + offset + ' ms');
     });
 
     ts.send = function (to, data) {
       //console.log('send', data);
       $.ajax({
-            url: to,
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType : 'application/json',
-            dataType: 'json' // response type
-          })
+        url: to,
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType : 'application/json',
+        dataType: 'json' // response type
+      })
           .done(function (data) {
             //console.log('receive', data);
             ts.receive(to, data);
@@ -41,5 +40,8 @@
           });
     };
   </script>
+</head>
+<body>
+(see outputs in the developer console)
 </body>
 </html>

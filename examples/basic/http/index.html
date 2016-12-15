@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
   <!-- include es5-shim and es5-shim when support for older browsers is needed -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.23.0/es6-shim.min.js"></script>
@@ -12,12 +17,17 @@
 
     // get notified on changes in the offset
     ts.on('change', function (offset) {
-      document.write('changed offset: ' + offset + ' ms<br>');
+      console.log('changed offset: ' + offset + ' ms');
     });
 
     // get synchronized time
     setInterval(function () {
       var now = new Date(ts.now());
-      document.write('now: ' + now.toISOString() + ' ms<br>');
+      console.log('now: ' + now.toISOString() + ' ms');
     }, 1000);
   </script>
+</head>
+<body>
+(see outputs in the developer console)
+</body>
+</html>
