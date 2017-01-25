@@ -1,5 +1,11 @@
 # History
 
+## 2017-01-25, version 0.3.0
+
+- Deliver ES5 version of the library in lib, bundled files in dist.
+  Thanks @electrified.
+
+
 ## 2016-12-15, version 0.2.3
 
 - Fixed some of the browser examples not working on Firefox.
