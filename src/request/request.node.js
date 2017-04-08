@@ -21,10 +21,15 @@ export function post (url, body, callback) {
 
   var req = http.request(options, function(res) {
     res.setEncoding('utf8');
+    var result = '';
     res.on('data', function (data) {
+      result += data;
+    });
+
+    res.on('end', function () {
       var contentType = res.headers['content-type'];
       var isJSON = contentType && contentType.indexOf('json') !== -1;
-      var body = isJSON ? JSON.parse(data) : data;
+      var body = isJSON ? JSON.parse(result) : result;
 
       callback && callback(null, body, res.statusCode);
       callback = null;

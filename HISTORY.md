@@ -1,5 +1,11 @@
 # History
 
+## 2017-04-08, version 0.3.1
+
+- Fixed a bug where JSON could be truncated on the server.
+  Thanks Matt Kincaid.
+
+
 ## 2017-01-25, version 0.3.0
 
 - Deliver ES5 version of the library in lib, bundled files in dist.
