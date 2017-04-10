@@ -243,6 +243,11 @@ The sending peer matches the returned message by id and uses the result to adjus
 This algorithm assumes multiple clients synchronizing with a single server. In case of multiple peers, `timesync` will take the average offset of all peers (excluding itself) as offset.
 
 
+# Tutorials
+
+- [Using the timesync library in Android applications](https://github.com/enmasseio/timesync/blob/master/docs/android-tutorial.md)
+
+
 # Resources
 
 - [A Stream-based Time Synchronization Technique For Networked Computer Games](http://www.mine-control.com/zack/timesync/timesync.html)
