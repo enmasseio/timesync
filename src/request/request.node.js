@@ -20,7 +20,7 @@ export function post (url, body, callback) {
     options.headers['Content-Type'] = 'application/json';
   }
 
-  var proto = urlObj.protocol === 'https' ? https : http;
+  var proto = urlObj.protocol === 'https:' ? https : http;
 
   var req = proto.request(options, function(res) {
     res.setEncoding('utf8');
