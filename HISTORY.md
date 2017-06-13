@@ -1,6 +1,6 @@
 # History
 
-## not yet released, version 0.4.0
+## 2017-06-13, version 0.4.0
 
 - Added support for `https`. Thanks @jaquadro.
 - Added a tutorial on how to use `timesync` in Android. Thanks @NicoHerbig.
