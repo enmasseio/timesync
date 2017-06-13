@@ -1,4 +1,5 @@
 import http from 'http';
+import https from 'https';
 import url from 'url';
 var parseUrl = url.parse;
 
@@ -19,7 +20,9 @@ export function post (url, body, callback) {
     options.headers['Content-Type'] = 'application/json';
   }
 
-  var req = http.request(options, function(res) {
+  var proto = urlObj.protocol === 'https:' ? https : http;
+
+  var req = proto.request(options, function(res) {
     res.setEncoding('utf8');
     var result = '';
     res.on('data', function (data) {
