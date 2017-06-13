@@ -2,8 +2,8 @@
 
 ## not yet released, version 0.4.0
 
-- Added a tutorial on how to use `timesync` in Android.
-  Thanks @NicoHerbig.
+- Added support for `https`. Thanks @jaquadro.
+- Added a tutorial on how to use `timesync` in Android. Thanks @NicoHerbig.
 
 
 ## 2017-04-08, version 0.3.1
