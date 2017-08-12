@@ -61,7 +61,7 @@ export function create(options) {
           else {
             timesync.receive(to, res);
           }
-        });
+        }, timesync.options.timeout);
       }
       catch (err) {
         emitError(err);
