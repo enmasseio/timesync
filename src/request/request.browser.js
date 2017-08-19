@@ -1,10 +1,10 @@
-export function fetch (method, url, body, headers, callback) {
+export function fetch (method, url, body, headers, callback, timeout) {
   try {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         var contentType = xhr.getResponseHeader('Content-Type');
-        if (contentType.indexOf('json') !== -1) {
+        if (contentType && contentType.indexOf('json') !== -1) {
           // return JSON object
           callback(null, JSON.parse(xhr.responseText), xhr.status);
         }
@@ -22,7 +22,12 @@ export function fetch (method, url, body, headers, callback) {
       }
     }
 
+    xhr.ontimeout = function (err) {
+      callback(err, null, 0);
+    };
+
     xhr.open(method, url, true);
+    xhr.timeout = timeout;
 
     if (typeof body === 'string') {
       xhr.send(body);
@@ -40,6 +45,6 @@ export function fetch (method, url, body, headers, callback) {
   }
 }
 
-export function post (url, body, callback) {
-  fetch('POST', url, body, null, callback)
+export function post (url, body, callback, timeout) {
+  fetch('POST', url, body, null, callback, timeout)
 }
