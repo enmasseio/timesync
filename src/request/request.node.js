@@ -3,7 +3,7 @@ import https from 'https';
 import url from 'url';
 var parseUrl = url.parse;
 
-export function post (url, body, callback) {
+export function post (url, body, callback, timeout) {
   var data = (body === 'string') ? body : JSON.stringify(body);
   var urlObj = parseUrl(url);
 
@@ -42,6 +42,12 @@ export function post (url, body, callback) {
   req.on('error', function(err) {
     callback && callback(err, null, null);
     callback = null;
+  });
+
+  req.on('socket', function(socket) {
+    socket.setTimeout(timeout, function() {
+      req.abort();
+    });
   });
 
   req.write(data);
