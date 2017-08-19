@@ -1,5 +1,12 @@
 # History
 
+## 2017-08-19, version 0.4.1
+
+- Made examples robust against a varying working directory.
+- Fixed #11: added timeout to http requests to fix infinite
+  call / response loops. Thanks @dfeblowitz.
+
+
 ## 2017-06-13, version 0.4.0
 
 - Added support for `https`. Thanks @jaquadro.
