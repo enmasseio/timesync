@@ -12,7 +12,7 @@ function handler (req, res) {
 
   if (req.url === '/timesync/timesync.js') {
     res.setHeader('Content-Type', 'application/javascript');
-    return sendFile('../../../dist/timesync.js', res);
+    return sendFile(__dirname + '../../../dist/timesync.js', res);
   }
 
   if (req.url === '/' || req.url === 'index.html') {

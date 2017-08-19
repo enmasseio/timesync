@@ -15,7 +15,7 @@ timesyncServer.attachServer(server);
 
 // just server a static index.html file
 function handler (req, res) {
-  sendFile(res, 'index.html');
+  sendFile(res, __dirname + '/index.html');
 }
 
 function sendFile(res, filename) {
