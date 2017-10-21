@@ -210,11 +210,11 @@ export function create(options) {
      * @private
      */
     _getOffset: function (peer) {
-      var start = Date.now(); // local system time
+      var start = timesync.options.now(); // local system time
 
       return timesync.rpc(peer, 'timesync')
           .then(function (timestamp) {
-            var end = Date.now(); // local system time
+            var end = timesync.options.now(); // local system time
             var roundtrip = end - start;
             var offset = timestamp - end + roundtrip / 2; // offset from local system time
 
