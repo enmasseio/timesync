@@ -1,5 +1,12 @@
 # History
 
+
+## 2017-10-23, version 0.4.2
+
+- Fixed syncing to peers not using custom configuration `now`.
+  Thanks @reklawnos.
+
+
 ## 2017-08-19, version 0.4.1
 
 - Made examples robust against a varying working directory.
