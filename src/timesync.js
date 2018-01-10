@@ -51,10 +51,15 @@ export function create(options) {
      * This method must be overridden when using timesync
      * @param {string} to
      * @param {*} data
+     * @param {function} callback
      */
-    send: function (to, data) {
+    send: function (to, data, callback) {
       try {
         request.post(to, data, function(err, res) {
+          if (typeof callback === 'function') {
+            callback(err, res);
+          }
+
           if (err) {
             emitError(err);
           }
@@ -105,13 +110,7 @@ export function create(options) {
       return new Promise(function (resolve, reject) {
         var id = util.nextId();
 
-        var timeout = setTimeout(function () {
-          delete timesync._inProgress[id];
-          reject(new Error('Timeout'));
-        }, timesync.options.timeout);
-
         timesync._inProgress[id] = function (data) {
-          clearTimeout(timeout);
           delete timesync._inProgress[id];
 
           resolve(data);
@@ -122,6 +121,11 @@ export function create(options) {
           id: id,
           method: method,
           params: params
+        }, function (err) {
+          if (err) {
+            delete timesync._inProgress[id];
+            reject(new Error('Send failure'));
+          }
         });
       });
     },
