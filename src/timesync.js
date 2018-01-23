@@ -54,23 +54,15 @@ export function create(options) {
      * @param {function} callback
      */
     send: function (to, data, callback) {
-      try {
-        request.post(to, data, function(err, res) {
-          if (typeof callback === 'function') {
-            callback(err, res);
-          }
+        return request.post(to, data, timesync.options.timeout)
+            .then(function (val) {
+              var res = val[0];
 
-          if (err) {
-            emitError(err);
-          }
-          else {
-            timesync.receive(to, res);
-          }
-        }, timesync.options.timeout);
-      }
-      catch (err) {
-        emitError(err);
-      }
+              timesync.receive(to, res);
+            })
+            .catch(function (err) {
+              emitError(err);
+            });
     },
 
     /**
@@ -107,27 +99,31 @@ export function create(options) {
      * @returns {Promise}
      */
     rpc: function (to, method, params) {
-      return new Promise(function (resolve, reject) {
-        var id = util.nextId();
-
-        timesync._inProgress[id] = function (data) {
-          delete timesync._inProgress[id];
-
-          resolve(data);
-        };
-
-        timesync.send(to, {
-          jsonrpc: '2.0',
-          id: id,
-          method: method,
-          params: params
-        }, function (err) {
-          if (err) {
-            delete timesync._inProgress[id];
-            reject(new Error('Send failure'));
-          }
-        });
+      var id = util.nextId();
+      var resolve, reject;
+      var deferred = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
       });
+
+      timesync._inProgress[id] = function (data) {
+        delete timesync._inProgress[id];
+
+        resolve(data);
+      };
+
+      timesync.send(to, {
+        jsonrpc: '2.0',
+        id: id,
+        method: method,
+        params: params
+      })
+      .catch(function (err) {
+        delete timesync._inProgress[id];
+        reject(new Error('Send failure'));
+      });
+
+      return deferred;
     },
 
     /**
