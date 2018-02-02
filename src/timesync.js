@@ -51,10 +51,9 @@ export function create(options) {
      * This method must be overridden when using timesync
      * @param {string} to
      * @param {*} data
-     * @param {function} callback
      */
-    send: function (to, data, callback) {
-        return request.post(to, data, timesync.options.timeout)
+    send: function (to, data, timeout) {
+        return request.post(to, data, timesync)
             .then(function (val) {
               var res = val[0];
 
@@ -91,6 +90,11 @@ export function create(options) {
       }
     },
 
+    _handleRPCSendError: function (id, reject, err) {
+      delete timesync._inProgress[id];
+      reject(new Error('Send failure'));
+    },
+
     /**
      * Send a JSON-RPC message and retrieve a response
      * @param {string} to
@@ -112,16 +116,24 @@ export function create(options) {
         resolve(data);
       };
 
-      timesync.send(to, {
-        jsonrpc: '2.0',
-        id: id,
-        method: method,
-        params: params
-      })
-      .catch(function (err) {
-        delete timesync._inProgress[id];
-        reject(new Error('Send failure'));
-      });
+      let sendResult; 
+      
+      try {
+        sendResult = timesync.send(to, {
+          jsonrpc: '2.0',
+          id: id,
+          method: method,
+          params: params
+        }, timesync.options.timeout);
+      } catch(err) {
+        timesync._handleRPCSendError(id, reject, err);
+      }
+
+      if (sendResult && (sendResult instanceof Promise || (sendResult.then && sendResult.catch))) {
+        sendResult.catch(timesync._handleRPCSendError.bind(this, id, reject));
+      } else {
+        console.warn('Send should return a promise');
+      }
 
       return deferred;
     },

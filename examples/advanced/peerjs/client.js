@@ -37,7 +37,7 @@ function connect(id, peers) {
     domOffset.innerHTML = offset.toFixed(1) + ' ms';
   });
 
-  ts.send = function (id, data) {
+  ts.send = function (id, data, timeout) {
     //console.log('send', id, data);
     var all = peer.connections[id];
     var conn = all && all.filter(function (conn) {
@@ -50,6 +50,9 @@ function connect(id, peers) {
     else {
       console.log(new Error('Cannot send message: not connected to ' + id).toString());
     }
+
+    // Ignoring timeouts
+    return Promise.resolve();
   };
 
   // show the system time and synced time once a second on screen

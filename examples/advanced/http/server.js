@@ -1,5 +1,6 @@
 var app = require('http').createServer(handler);
 var fs = require('fs');
+var path = require('path');
 
 var PORT = 8081;
 
@@ -11,7 +12,7 @@ function handler (req, res) {
 
   if (req.url === '/timesync/timesync.js') {
     res.setHeader('Content-Type', 'application/javascript');
-    return sendFile(__dirname + '../../../dist/timesync.js', res);
+    return sendFile(path.join(__dirname, '../../../dist/timesync.js'), res);
   }
 
   if (req.url === '/timesync') {
