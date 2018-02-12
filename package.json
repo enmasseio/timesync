@@ -18,9 +18,9 @@
     "url": "git://github.com/enmasseio/timesync.git"
   },
   "dependencies": {
-    "body-parser": "1.11.0",
+    "body-parser": "1.17.1",
     "debug": "3.1.0",
-    "express": "4.11.2",
+    "express": "4.16.0",
     "promise": "8.0.1"
   },
   "devDependencies": {
