@@ -145,10 +145,10 @@ Name                  | Return type | Description
 
 To be able to send and receive messages from peers, `timesync` needs a transport. To hook up a transport like a websocket or http requests, one has to override the `send(id, data)` method of the `timesync` instance, and has to call `ts.receive(id, data)` on incoming messages.
 
-Name                  | Return type | Description
---------------------- | ----------- | ----------------------------------
-`send(to, data)`      | none        | Send a message to a peer. `to` is the id of the peer, and `data` a JSON object containing the message.
-`receive(from, data)` | none        | Receive a message from a peer. `from` is the id of the sender, and `data` a JSON object containing the message.
+Name                                | Return type | Description
+----------------------------------- | ----------- | ----------------------------------
+`send(to, data, timeout) : Promise` | none        | Send a message to a peer. `to` is the id of the peer, and `data` a JSON object containing the message. Must return a Promise which resolves when the message has been sent, or rejects when sending failed or a timeout occurred.
+`receive(from, data)`               | none        | Receive a message from a peer. `from` is the id of the sender, and `data` a JSON object containing the message.
 
 `timesync` sends messages using the JSON-RPC protocol, as described in the section [Protocol](#protocol).
 

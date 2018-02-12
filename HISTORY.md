@@ -1,6 +1,14 @@
 # History
 
 
+## 2018-02-12, version 1.0.0
+
+- Function `send` now needs to return a Promise, and has to handle
+  timeouts itself. This fixes timeouts occurring before xhr success.
+  Thanks @DerekKeeler.
+- Upgraded dependencies.
+
+
 ## 2017-10-23, version 0.4.2
 
 - Fixed syncing to peers not using custom configuration `now`.
