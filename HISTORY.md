@@ -1,6 +1,11 @@
 # History
 
 
+## 2018-02-12, version 1.0.1
+
+- Upgraded some dependencies containing security vulnerabilities.
+
+
 ## 2018-02-12, version 1.0.0
 
 - Function `send` now needs to return a Promise, and has to handle
