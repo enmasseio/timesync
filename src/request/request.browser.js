@@ -45,6 +45,16 @@ export function fetch (method, url, body, headers, callback, timeout) {
   }
 }
 
-export function post (url, body, callback, timeout) {
-  fetch('POST', url, body, null, callback, timeout)
+export function post (url, body, timeout) {
+  return new Promise((resolve, reject) => {
+    var callback = (err, res, status) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve([res, status]);
+    };
+
+    fetch('POST', url, body, null, callback, timeout)
+  });
 }

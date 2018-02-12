@@ -52,20 +52,16 @@ export function create(options) {
      * @param {string} to
      * @param {*} data
      */
-    send: function (to, data) {
-      try {
-        request.post(to, data, function(err, res) {
-          if (err) {
-            emitError(err);
-          }
-          else {
-            timesync.receive(to, res);
-          }
-        }, timesync.options.timeout);
-      }
-      catch (err) {
-        emitError(err);
-      }
+    send: function (to, data, timeout) {
+        return request.post(to, data, timesync)
+            .then(function (val) {
+              var res = val[0];
+
+              timesync.receive(to, res);
+            })
+            .catch(function (err) {
+              emitError(err);
+            });
     },
 
     /**
@@ -94,6 +90,11 @@ export function create(options) {
       }
     },
 
+    _handleRPCSendError: function (id, reject, err) {
+      delete timesync._inProgress[id];
+      reject(new Error('Send failure'));
+    },
+
     /**
      * Send a JSON-RPC message and retrieve a response
      * @param {string} to
@@ -102,28 +103,39 @@ export function create(options) {
      * @returns {Promise}
      */
     rpc: function (to, method, params) {
-      return new Promise(function (resolve, reject) {
-        var id = util.nextId();
+      var id = util.nextId();
+      var resolve, reject;
+      var deferred = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
 
-        var timeout = setTimeout(function () {
-          delete timesync._inProgress[id];
-          reject(new Error('Timeout'));
-        }, timesync.options.timeout);
+      timesync._inProgress[id] = function (data) {
+        delete timesync._inProgress[id];
 
-        timesync._inProgress[id] = function (data) {
-          clearTimeout(timeout);
-          delete timesync._inProgress[id];
+        resolve(data);
+      };
 
-          resolve(data);
-        };
-
-        timesync.send(to, {
+      let sendResult; 
+      
+      try {
+        sendResult = timesync.send(to, {
           jsonrpc: '2.0',
           id: id,
           method: method,
           params: params
-        });
-      });
+        }, timesync.options.timeout);
+      } catch(err) {
+        timesync._handleRPCSendError(id, reject, err);
+      }
+
+      if (sendResult && (sendResult instanceof Promise || (sendResult.then && sendResult.catch))) {
+        sendResult.catch(timesync._handleRPCSendError.bind(this, id, reject));
+      } else {
+        console.warn('Send should return a promise');
+      }
+
+      return deferred;
     },
 
     /**

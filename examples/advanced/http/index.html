@@ -22,22 +22,28 @@
       console.log('changed offset: ' + offset + ' ms');
     });
 
-    ts.send = function (to, data) {
+    ts.send = function (to, data, timeout) {
       //console.log('send', data);
-      $.ajax({
-        url: to,
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType : 'application/json',
-        dataType: 'json' // response type
-      })
+
+      return new Promise(function (resolve, reject) {
+        $.ajax({
+          url: to,
+          type: 'POST',
+          data: JSON.stringify(data),
+          contentType : 'application/json',
+          dataType: 'json', // response type
+          timeout: timeout
+        })
           .done(function (data) {
             //console.log('receive', data);
             ts.receive(to, data);
+            resolve();
           })
           .fail(function (err) {
             console.log('Error', err);
+            reject(err);
           });
+      });
     };
   </script>
 </head>

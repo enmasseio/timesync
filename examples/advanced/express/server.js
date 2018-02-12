@@ -1,12 +1,13 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var path = require('path');
 
 var PORT = 8081;
 
 var app = express();
 app.use(bodyParser.json()); // for parsing application/json
 app.use('/', express.static(__dirname));
-app.use('/timesync/', express.static(__dirname + '/../../../dist'));
+app.use('/timesync/', express.static(path.join(__dirname, '/../../../dist')));
 
 app.post('/timesync', function (req, res) {
   var data = {

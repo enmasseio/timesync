@@ -25,9 +25,23 @@
       console.log('changed offset: ' + offset + ' ms');
     });
 
-    ts.send = function (socket, data) {
+    ts.send = function (socket, data, timeout) {
       //console.log('send', data);
-      socket.emit('timesync', data);
+
+      var resolve, reject;
+      var deferred = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+
+      var timeoutFn = setTimeout(reject, timeout);
+
+      socket.emit('timesync', data, function () {
+        clearTimeout(timeoutFn);
+        resolve();
+      });
+
+      return deferred;
     };
 
     socket1.on('timesync', function (data) {
