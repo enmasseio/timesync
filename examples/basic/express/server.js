@@ -10,7 +10,7 @@ console.log('Server listening at http://localhost:' + PORT);
 
 // serve static index.html
 app.get('/', express.static(__dirname));
-app.get('/index2.html', express.static(__dirname));
+app.get('/index.html', express.static(__dirname));
 
 // handle timesync requests
 app.use('/timesync', timesyncServer.requestHandler);
