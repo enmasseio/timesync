@@ -1,6 +1,11 @@
 # History
 
 
+## 2018-03-07, version 1.0.2
+
+- Fixed a broken example. Thanks @gokayokyay.
+
+
 ## 2018-02-12, version 1.0.1
 
 - Upgraded some dependencies containing security vulnerabilities.
