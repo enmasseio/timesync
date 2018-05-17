@@ -1,5 +1,5 @@
 {
-  "name": "tenfold/timesync",
+  "name": "timesync",
   "version": "1.0.4",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
