@@ -53,7 +53,7 @@ export function create(options) {
      * @param {*} data
      */
     send: function (to, data, timeout) {
-        return request.post(to, data, timesync)
+        return request.post(to, data, timeout)
             .then(function (val) {
               var res = val[0];
 
@@ -116,8 +116,8 @@ export function create(options) {
         resolve(data);
       };
 
-      let sendResult; 
-      
+      let sendResult;
+
       try {
         sendResult = timesync.send(to, {
           jsonrpc: '2.0',
