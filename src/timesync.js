@@ -64,6 +64,7 @@ export function create(options) {
             })
             .catch(function (err) {
               emitError(err);
+              throw new Error(err);
             });
     },
 
