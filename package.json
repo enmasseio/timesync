@@ -1,6 +1,6 @@
 {
   "name": "@tenfold/timesync",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
   "main": "./lib/timesync.js",
