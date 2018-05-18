@@ -56,6 +56,9 @@ export function create(options) {
         return request.post(to, data, timeout)
             .then(function (val) {
               var res = val[0];
+              if(val[1] !== 200) {
+                throw new Error(val);
+              }
 
               timesync.receive(to, res);
             })
