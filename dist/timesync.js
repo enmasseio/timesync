@@ -1222,6 +1222,7 @@ function create(options) {
         timesync.receive(to, res);
       }).catch(function (err) {
         emitError(err);
+        throw new Error(err);
       });
     },
 
