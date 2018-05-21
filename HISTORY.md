@@ -1,6 +1,11 @@
 # History
 
 
+## 2018-05-21, version 1.0.3
+
+- Fixed the `send` method passing a wrong parameter to `request.post`.
+
+
 ## 2018-03-07, version 1.0.2
 
 - Fixed a broken example. Thanks @gokayokyay.
