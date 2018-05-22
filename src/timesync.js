@@ -28,7 +28,7 @@ export function create(options) {
       peers: [],                // uri's or id's of the peers
       server: null,             // uri of a single server (master/slave configuration)
       now: Date.now,            // function returning the system time
-      console: console          // define logger. can be overrided
+      logger: console           // define default logger. can be overrided
     },
 
     /** @type {number} The current offset from system time */
@@ -137,7 +137,7 @@ export function create(options) {
       if (sendResult && (sendResult instanceof Promise || (sendResult.then && sendResult.catch))) {
         sendResult.catch(timesync._handleRPCSendError.bind(this, id, reject));
       } else {
-        timesync.console.warn('Send should return a promise');
+        timesync.logger.warn('Send should return a promise');
       }
 
       return deferred;
@@ -298,7 +298,7 @@ export function create(options) {
 
   /**
    * Emit an error message. If there are no listeners, the error is outputted
-   * to the timesync.console.
+   * to the timesync.logger.
    * @param {Error} err
    */
   function emitError(err) {
@@ -306,7 +306,7 @@ export function create(options) {
       timesync.emit('error', err);
     }
     else {
-      timesync.console.log('Error', err);
+      timesync.logger.log('Error', err);
     }
   }
 
