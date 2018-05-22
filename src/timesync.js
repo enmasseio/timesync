@@ -306,7 +306,7 @@ export function create(options) {
       timesync.emit('error', err);
     }
     else {
-      timesync.logger.log('Error', err);
+      timesync.logger.error('Error', err);
     }
   }
 

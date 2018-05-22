@@ -1468,7 +1468,7 @@ function create(options) {
     if (timesync.list('error').length > 0) {
       timesync.emit('error', err);
     } else {
-      timesync.logger.log('Error', err);
+      timesync.logger.error('Error', err);
     }
   }
 
