@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.timesync = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.timesync = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 "use strict";
 
 // rawAsap provides everything we need except exception management.
@@ -1187,7 +1187,8 @@ function create(options) {
       repeat: 5, // number of times to do a request to one peer
       peers: [], // uri's or id's of the peers
       server: null, // uri of a single server (master/slave configuration)
-      now: Date.now // function returning the system time
+      now: Date.now, // function returning the system time
+      logger: console // define default logger. can be overrided
     },
 
     /** @type {number} The current offset from system time */
@@ -1293,7 +1294,7 @@ function create(options) {
       if (sendResult && (sendResult instanceof Promise || sendResult.then && sendResult.catch)) {
         sendResult.catch(timesync._handleRPCSendError.bind(this, id, reject));
       } else {
-        console.warn('Send should return a promise');
+        timesync.logger.warn('Send should return a promise');
       }
 
       return deferred;
@@ -1460,14 +1461,14 @@ function create(options) {
 
   /**
    * Emit an error message. If there are no listeners, the error is outputted
-   * to the console.
+   * to the timesync.logger.
    * @param {Error} err
    */
   function emitError(err) {
     if (timesync.list('error').length > 0) {
       timesync.emit('error', err);
     } else {
-      console.log('Error', err);
+      timesync.logger.error('Error', err);
     }
   }
 
