@@ -1,3 +1,8 @@
+/**
+ * Before you can run this example you will have to install a dependency:
+ *
+ *     npm install socket.io
+ */
 var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
 var fs = require('fs');

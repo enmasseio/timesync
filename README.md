@@ -53,6 +53,8 @@ used over other transports than http, for example using websockets or webrtc.
 This is demonstrated in the [advanced examples](/examples/advanced).
 
 More examples are available in the [/examples](/examples) folder.
+Some of the example use libraries like `express` or `socket.io`.
+Before you can run these examples you will have to install these dependencies.
 
 **server.js**
 

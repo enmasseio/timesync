@@ -1,3 +1,9 @@
+/**
+ * Before you can run this example you will have to install some dependencies:
+ *
+ *     npm install express
+ *     npm install body-parser
+ */
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');

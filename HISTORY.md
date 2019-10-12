@@ -1,6 +1,13 @@
 # History
 
 
+## 2019-10-12, version 1.0.4
+
+- Move the `dependencies` only used in examples to `devDependencies`:
+  `express`, `body-parser`, `socket.io`, promise`. To run the examples,
+  you will have to install these dependencies yourself.
+
+
 ## 2018-05-21, version 1.0.3
 
 - Fixed the `send` method passing a wrong parameter to `request.post`.

@@ -1,4 +1,8 @@
-To run this example, start the server:
+To run this example, first install dependencies:
+
+    npm install express
+
+Then start the server:
 
     node server.js
 
