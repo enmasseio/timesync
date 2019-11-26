@@ -53,7 +53,7 @@ used over other transports than http, for example using websockets or webrtc.
 This is demonstrated in the [advanced examples](/examples/advanced).
 
 More examples are available in the [/examples](/examples) folder.
-Some of the example use libraries like `express` or `socket.io`.
+Some of the examples use libraries like `express` or `socket.io`.
 Before you can run these examples you will have to install these dependencies.
 
 **server.js**
@@ -170,7 +170,7 @@ Available events:
 Name     | Description
 ---------| ----------
 `change` | Emitted when the offset is changed. This can only happen during a synchronization. Callbacks are called with the new offset (a number) as argument.
-`error`  | Emitted when an error occurred. Callbacks are called with the the error as argument.
+`error`  | Emitted when an error occurred. Callbacks are called with the error as argument.
 `sync`   | Emitted when a synchronization is started or finished. Callback are called with a value `'start'` or `'end'` as argument.
 
 
@@ -184,7 +184,7 @@ Name      | Type     | Description
 
 ## Server
 
-`timesync` comes with a build in server to serve as a master for time synchronization. Clients can adjust their time to that of the server. The server basically just implements a POST request responding with it's current time, and serves the static files `timesync.js` and `timesync.min.js` from the `/dist` folder. It's quite easy to implement this request handler yourself, as is demonstrated in the [advanced examples](/examples/advanced).
+`timesync` comes with a build in server to serve as a master for time synchronization. Clients can adjust their time to that of the server. The server basically just implements a POST request responding with its current time, and serves the static files `timesync.js` and `timesync.min.js` from the `/dist` folder. It's quite easy to implement this request handler yourself, as is demonstrated in the [advanced examples](/examples/advanced).
 
 The protocol used by the server is described in the section [Protocol](#protocol).
 
@@ -219,7 +219,7 @@ Name              | Type       | Description
 {"jsonrpc": "2.0", "id": "12345", "method": "timesync"}
 ```
 
-The receiving peer replies with the same id and it's current time:
+The receiving peer replies with the same id and its current time:
 
 ```json
 {"jsonrpc": "2.0", "id": "12345", "result": 1423151204595}
@@ -236,7 +236,7 @@ The sending peer matches the returned message by id and uses the result to adjus
 >
 > 1. Client stamps current local time on a "time request" packet and sends to server
 > 2. Upon receipt by server, server stamps server-time and returns
-> 3. Upon receipt by client, client subtracts current time from sent time and divides by two to compute latency. It subtracts current time from server time to determine client-server time delta and adds in the half-latency to get the correct clock delta. (So far this algothim is very similar to SNTP)
+> 3. Upon receipt by client, client subtracts current time from sent time and divides by two to compute latency. It subtracts current time from server time to determine client-server time delta and adds in the half-latency to get the correct clock delta. (So far this algorithm is very similar to SNTP)
 > 4. The first result should immediately be used to update the clock since it will get the local clock into at least the right ballpark (at least the right timezone!)
 > 5. The client repeats steps 1 through 3 five or more times, pausing a few seconds each time. Other traffic may be allowed in the interim, but should be minimized for best results
 > 6. The results of the packet receipts are accumulated and sorted in lowest-latency to highest-latency order. The median latency is determined by picking the mid-point sample from this ordered list.
