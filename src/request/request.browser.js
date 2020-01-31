@@ -5,8 +5,13 @@ export function fetch (method, url, body, headers, callback, timeout) {
       if (xhr.readyState == 4) {
         var contentType = xhr.getResponseHeader('Content-Type');
         if (contentType && contentType.indexOf('json') !== -1) {
-          // return JSON object
-          callback(null, JSON.parse(xhr.responseText), xhr.status);
+          try {
+            // return JSON object
+            var response = JSON.parse(xhr.responseText);
+            callback(null, response, xhr.status);
+          } catch (err) {
+            callback(err, null, xhr.status);
+          }
         }
         else {
           // return text

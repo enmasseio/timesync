@@ -33,9 +33,14 @@ export function post (url, body, timeout) {
       res.on('end', function () {
         var contentType = res.headers['content-type'];
         var isJSON = contentType && contentType.indexOf('json') !== -1;
-        var body = isJSON ? JSON.parse(result) : result;
 
-        resolve([body, res.statusCode]);
+        try {
+          var body = isJSON ? JSON.parse(result) : result;
+
+          resolve([body, res.statusCode]);
+        } catch (err) {
+          reject(err)
+        }
       });
     });
 
