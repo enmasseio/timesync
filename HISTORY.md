@@ -1,6 +1,11 @@
 # History
 
 
+## 2020-02-01, version 1.0.5
+
+- Fix handing invalid JSON responses, see #27. Thanks @Poky85.
+
+
 ## 2019-10-12, version 1.0.4
 
 - Move the `dependencies` only used in examples to `devDependencies`:
