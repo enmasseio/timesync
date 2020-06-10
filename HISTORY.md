@@ -5,6 +5,7 @@
 
 - Make the server side robust against requests with an invalid, 
   unparsable body: return ah HTTP 400 error. Thanks @calebTomlinson.
+- Upgraded the dependency `debug` and all devDependencies.
 
 
 ## 2020-02-01, version 1.0.5
