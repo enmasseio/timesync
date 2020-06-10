@@ -1,6 +1,12 @@
 # History
 
 
+## not yet published, version 1.0.6
+
+- Make the server side robust against requests with an invalid, 
+  unparsable body: return ah HTTP 400 error. Thanks @calebTomlinson.
+
+
 ## 2020-02-01, version 1.0.5
 
 - Fix handing invalid JSON responses, see #27. Thanks @Poky85.
