@@ -3,6 +3,7 @@
 
 ## not yet published, version 1.0.6
 
+- Fix #31: library not working in React Native.
 - Make the server side robust against requests with an invalid, 
   unparsable body: return ah HTTP 400 error. Thanks @calebTomlinson.
 - Upgraded the dependency `debug` and all devDependencies.
