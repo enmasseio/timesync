@@ -1,7 +1,7 @@
 # History
 
 
-## not yet published, version 1.0.6
+## 2020-06-10, version 1.0.6
 
 - Fix #31: library not working in React Native.
 - Make the server side robust against requests with an invalid, 

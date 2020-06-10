@@ -1,6 +1,6 @@
 {
   "name": "timesync",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
   "main": "./lib/timesync.js",
@@ -40,11 +40,23 @@
     "minify": "uglifyjs dist/timesync.js -o dist/timesync.min.js",
     "compile": "babel src --out-dir lib",
     "build": "npm run bundle && npm run minify && npm run compile",
-    "watch": "watch \"npm run build\" src"
+    "watch": "watch \"npm run build\" src",
+    "prepublishOnly": "npm run build"
   },
   "browserify": {
     "transform": [
       "babelify"
     ]
-  }
+  },
+  "files": [
+    "dist",
+    "docs",
+    "examples",
+    "lib",
+    "server",
+    "src",
+    "HISTORY.md",
+    "LICENSE",
+    "README.md"
+  ]
 }
