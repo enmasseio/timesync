@@ -102,12 +102,12 @@ exports.requestHandler = function (req, res) {
 function sendTimestamp(req, res) {
   if (req.body) {
     // express.js or similar
-    sendTimeStampResponse(res, req.body);
+    sendTimeStampResponse(null, res, req.body);
   }
   else {
     // node.js
     readRequestBody(req, function (err, body) {
-      sendTimeStampResponse(res, body);
+      sendTimeStampResponse(err, res, body);
     });
   }
 }
@@ -124,27 +124,36 @@ function readRequestBody (req, callback) {
     }
   });
   req.on('end', function () {
-    callback(null, JSON.parse(body));
+    try {
+      callback(null, JSON.parse(body));
+    } catch {
+      callback(new Error('Invalid json in post body'));
+    }
   });
 }
 
-function sendTimeStampResponse (res, body) {
-
-  var data = {
-    id: 'id' in body ? body.id : null,
-    result: Date.now()
-  };
-
-  // Set content-type header
-  res.setHeader('Content-Type', 'application/json');
-
-  if(res.status && res.send) {
-    // express.js or similar
-    res.status(200).send(JSON.stringify(data));
+function sendTimeStampResponse (err, res, body) {
+  if (err) {
+    res.writeHead(400);
+    res.end(err.message);
   } else {
-    // node.js
-    res.writeHead(200);
-    res.end(JSON.stringify(data));
+
+    var data = {
+      id: 'id' in body ? body.id : null,
+      result: Date.now()
+    };
+
+    // Set content-type header
+    res.setHeader('Content-Type', 'application/json');
+
+    if(res.status && res.send) {
+      // express.js or similar
+      res.status(200).send(JSON.stringify(data));
+    } else {
+      // node.js
+      res.writeHead(200);
+      res.end(JSON.stringify(data));
+    }
   }
 
 }
