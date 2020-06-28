@@ -126,7 +126,7 @@ function readRequestBody (req, callback) {
   req.on('end', function () {
     try {
       callback(null, JSON.parse(body));
-    } catch {
+    } catch(e) {
       callback(new Error('Invalid json in post body'));
     }
   });
