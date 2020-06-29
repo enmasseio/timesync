@@ -1,6 +1,12 @@
 # History
 
 
+## 2020-06-29, version 1.0.7
+
+- Fixed a try/catch using optional catch not supported by 
+  all JavaScript engines. Thanks @cracker0dks.
+
+
 ## 2020-06-10, version 1.0.6
 
 - Fix #31: library not working in React Native.

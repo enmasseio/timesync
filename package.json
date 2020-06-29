@@ -1,6 +1,6 @@
 {
   "name": "timesync",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Time synchronization between peers",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",
   "main": "./lib/timesync.js",
@@ -21,9 +21,9 @@
     "debug": "4.1.1"
   },
   "devDependencies": {
-    "@babel/cli": "7.10.1",
-    "@babel/core": "7.10.2",
-    "@babel/preset-env": "7.10.2",
+    "@babel/cli": "7.10.3",
+    "@babel/core": "7.10.3",
+    "@babel/preset-env": "7.10.3",
     "babel-cli": "6.26.0",
     "babelify": "10.0.0",
     "body-parser": "1.19.0",
@@ -32,7 +32,7 @@
     "mkdirp": "1.0.4",
     "promise": "8.1.0",
     "socket.io": "2.3.0",
-    "uglify-js": "3.9.4",
+    "uglify-js": "3.10.0",
     "watch": "1.0.2"
   },
   "scripts": {
