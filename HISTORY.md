@@ -1,6 +1,12 @@
 # History
 
 
+## 2020-10-03, version 1.0.8
+
+- Fix #31: add fields `"browser"` and `"react-native"` to package.json, 
+  referring to the browser bundle `./dist/timesync.min.js`.
+
+
 ## 2020-06-29, version 1.0.7
 
 - Fixed a try/catch using optional catch not supported by 
