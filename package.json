@@ -33,7 +33,7 @@
     "express": "4.17.1",
     "mkdirp": "1.0.4",
     "promise": "8.1.0",
-    "socket.io": "2.3.0",
+    "socket.io": "2.4.0",
     "uglify-js": "3.11.0",
     "watch": "1.0.2"
   },
