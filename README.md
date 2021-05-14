@@ -230,7 +230,7 @@ The sending peer matches the returned message by id and uses the result to adjus
 
 # Algorithm
 
-`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](http://www.mine-control.com/zack/timesync/timesync.html):
+`timesync` uses a simple synchronization protocol aimed at the gaming industry, and extends this for peer-to-peer networks. The algorithm is described [here](https://web.archive.org/web/20160310125700/http://mine-control.com/zack/timesync/timesync.html):
 
 > A simple algorithm with these properties is as follows:
 >
@@ -252,7 +252,7 @@ This algorithm assumes multiple clients synchronizing with a single server. In c
 
 # Resources
 
-- [A Stream-based Time Synchronization Technique For Networked Computer Games](http://www.mine-control.com/zack/timesync/timesync.html)
+- [A Stream-based Time Synchronization Technique For Networked Computer Games](https://web.archive.org/web/20160310125700/http://mine-control.com/zack/timesync/timesync.html)
 - [Network Time Protocol](http://www.wikiwand.com/en/Network_Time_Protocol)
 
 
