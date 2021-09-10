@@ -57,6 +57,10 @@ export function create(options) {
             .then(function (val) {
               var res = val[0];
 
+              if(val[1] !== 200) {
+                throw new Error(val);
+              }
+
               timesync.receive(to, res);
             })
             .catch(function (err) {
