@@ -1,10 +1,15 @@
 # History
 
 
-## 2021-10-24, version 1.0.9
+## 2021-10-24, version 1.0.10
 
 - Fix #22: Emit error when the HTTP StatusCode is not 200 (see #44). 
   Thanks @gioid.
+
+
+## 2021-10-24, version 1.0.9
+
+- (oopsie, no changes merged, see 1.0.10)
 
 
 ## 2020-10-03, version 1.0.8
