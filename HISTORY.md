@@ -1,6 +1,12 @@
 # History
 
 
+## 2021-10-24, version 1.0.9
+
+- Fix #22: Emit error when the HTTP StatusCode is not 200 (see #44). 
+  Thanks @gioid.
+
+
 ## 2020-10-03, version 1.0.8
 
 - Fix #31: add fields `"browser"` and `"react-native"` to package.json, 
