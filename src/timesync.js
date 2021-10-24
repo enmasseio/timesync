@@ -57,6 +57,10 @@ export function create(options) {
             .then(function (val) {
               var res = val[0];
 
+              if(val[1] !== 200) {
+                throw new Error('Send failure: bad HTTP StatusCode (' + val[1] + ')');
+              }
+
               timesync.receive(to, res);
             })
             .catch(function (err) {
