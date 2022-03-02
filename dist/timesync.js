@@ -862,7 +862,11 @@ Promise.disableSynchronous = function() {
 },{"./core.js":4}],11:[function(require,module,exports){
 'use strict';
 
-module.exports = typeof window === 'undefined' || typeof window.Promise === 'undefined' ? require('promise') : window.Promise;
+var selfPromise = typeof self !== 'undefined' && typeof self.Promise !== 'undefined' && self.Promise;
+var windowPromise = typeof window !== 'undefined' && typeof window.Promise !== 'undefined' && window.Promise;
+var selfOrWindowPromise = selfPromise || windowPromise;
+
+module.exports = selfOrWindowPromise ? require('promise') : selfOrWindowPromise;
 
 },{"promise":3}],12:[function(require,module,exports){
 "use strict";
