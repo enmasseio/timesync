@@ -866,7 +866,7 @@ var selfPromise = typeof self !== 'undefined' && typeof self.Promise !== 'undefi
 var windowPromise = typeof window !== 'undefined' && typeof window.Promise !== 'undefined' && window.Promise;
 var selfOrWindowPromise = selfPromise || windowPromise;
 
-module.exports = selfOrWindowPromise ? require('promise') : selfOrWindowPromise;
+module.exports = selfOrWindowPromise ? selfOrWindowPromise : require('promise');
 
 },{"promise":3}],12:[function(require,module,exports){
 "use strict";
