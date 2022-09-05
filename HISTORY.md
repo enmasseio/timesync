@@ -1,6 +1,11 @@
 # History
 
 
+## 2022-09-05, version 1.0.11
+
+- Fix #51: upgrade `debug` dependency to the latest version.
+
+
 ## 2021-10-24, version 1.0.10
 
 - Fix #22: Emit error when the HTTP StatusCode is not 200 (see #44). 
