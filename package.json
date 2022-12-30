@@ -6,6 +6,7 @@
   "main": "./lib/timesync.js",
   "browser": "./dist/timesync.min.js",
   "react-native": "./dist/timesync.min.js",
+  "types": "./typings.d.ts",
   "license": "MIT",
   "keywords": [
     "time",
